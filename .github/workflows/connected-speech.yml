@@ -1,0 +1,56 @@
+name: Connected Rig Korean Speech CPU
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/connected-speech.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  speech:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    env:
+      LIBGL_ALWAYS_SOFTWARE: '1'
+      OMP_NUM_THREADS: '4'
+      BLENDER_SYSTEM_DATAFILES: /tmp/blender-source/release/datafiles
+      OCIO: /tmp/blender-source/release/datafiles/colormanagement/config.ocio
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: connected-face-2
+          path: input
+          github-token: ${{ github.token }}
+          run-id: 40164256182
+      - name: Install CPU renderer
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender ffmpeg xvfb xauth mesa-utils libgl1-mesa-dri
+          git clone --depth 1 --branch v3.0.1 --filter=blob:none --sparse https://github.com/blender/blender.git /tmp/blender-source
+          git -C /tmp/blender-source sparse-checkout set release/datafiles/colormanagement
+      - name: Render skin rig with Korean speech
+        run: |
+          mkdir -p output
+          xvfb-run -a glxinfo -B > output/glxinfo.txt
+          xvfb-run -a -s "-screen 0 1280x720x24" blender --factory-startup --background input/continuous-face.blend -t 4 --python-exit-code 1 --python studies/connected_talking.py > output/render.log 2>&1
+          ffmpeg -y -framerate 24 -i output/frame_%04d.png -i studies/fixtures/004-voice.wav -c:v libx264 -crf 18 -pix_fmt yuv420p -c:a aac -b:a 128k -movflags +faststart output/skin-rig-korean.mp4
+          ffprobe -v error -show_streams -of json output/skin-rig-korean.mp4 > output/video-check.json
+          python3 - <<'PY'
+          import json
+          r=json.load(open('output/report.json'))
+          streams=json.load(open('output/video-check.json'))['streams']
+          v=next(s for s in streams if s['codec_type']=='video')
+          a=next(s for s in streams if s['codec_type']=='audio')
+          assert int(v['nb_frames'])==77
+          assert abs(float(v['duration'])-float(a['duration']))<.08
+          assert 'llvmpipe' in open('output/glxinfo.txt').read()
+          assert r['frames']==77
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: connected-rig-korean-${{ github.run_number }}
+          path: output
+          retention-days: 14
