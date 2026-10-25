@@ -1,0 +1,32 @@
+{
+  "text": "안녕! 오늘은 무슨 놀이를 할까?",
+  "tts": "Supertonic 3 ONNX CPU",
+  "model_revision": "aafc6e32416a594460b32413efc49d7fe4ce6d46",
+  "voices": [
+    "F1",
+    "F4"
+  ],
+  "selected_for_cues": "F1",
+  "sample_rate": 16000,
+  "duration_seconds": 3.1744375,
+  "rms": 0.04915617322852088,
+  "mouth_cue_count": 15,
+  "mouth_cue_values": [
+    "A",
+    "B",
+    "C",
+    "E",
+    "F",
+    "X"
+  ],
+  "rhubarb_version": "1.14.0",
+  "recognizer": "phonetic",
+  "elapsed_seconds": 12.06,
+  "limitations": [
+    "preset voices, not original actor voice",
+    "no voice cloning",
+    "mouth cues are provisional phonetic estimates",
+    "Korean pronunciation and acting require listening review",
+    "not yet attached to the rendered character"
+  ]
+}

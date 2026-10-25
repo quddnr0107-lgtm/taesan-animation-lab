@@ -1,0 +1,26 @@
+{
+  "experiment": "005-korean-talking-B",
+  "frames": 77,
+  "fps": 24,
+  "width": 768,
+  "height": 432,
+  "voice_seconds": 3.1744375,
+  "video_seconds": 3.2083333333333335,
+  "render_elapsed_seconds": 271.21,
+  "max_rss_kib": 701340,
+  "source_mouth_segments": 15,
+  "active_mouth_frames": 44,
+  "closed_mouth_frames": 33,
+  "voice_text": "안녕! 오늘은 무슨 놀이를 할까?",
+  "tools": [
+    "Blender EEVEE via llvmpipe CPU",
+    "Supertonic 3 ONNX CPU preset F1",
+    "Rhubarb 1.14.0 phonetic"
+  ],
+  "limitations": [
+    "approximate phonetic mouth-shape mapping, not exact Korean phoneme alignment",
+    "adult preset voice, not the original actor",
+    "face/hair are still procedural approximations",
+    "no claim of broadcast-equivalent quality"
+  ]
+}

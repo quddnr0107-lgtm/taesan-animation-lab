@@ -1,0 +1,13 @@
+{
+  "engine": "faster-whisper small CPU int8",
+  "expected": "안녕! 오늘은 무슨 놀이를 할까?",
+  "transcript": "안녕. 오늘은 무슨 놀이를 할까?",
+  "normalized_character_error_rate": 0.0,
+  "elapsed_seconds": 7.56,
+  "machine_check": true,
+  "limitations": [
+    "ASR can be wrong",
+    "not a perceptual acting-quality assessment",
+    "not original actor voice"
+  ]
+}
