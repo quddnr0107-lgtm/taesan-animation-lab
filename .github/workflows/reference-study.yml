@@ -21,6 +21,7 @@ jobs:
       STUDY_STILL_ONLY: ${{ github.event_name == 'push' && '1' || (inputs.still_only && '1' || '0') }}
       LIBGL_ALWAYS_SOFTWARE: '1'
       OMP_NUM_THREADS: '4'
+      BLENDER_SYSTEM_DATAFILES: /tmp/blender-source/release/datafiles
       OCIO: /tmp/blender-source/release/datafiles/colormanagement/config.ocio
     steps:
       - uses: actions/checkout@v4
