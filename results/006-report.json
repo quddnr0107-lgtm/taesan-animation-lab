@@ -1,0 +1,57 @@
+{
+  "experiment": "006-deformable-face",
+  "vertices": 23461,
+  "eyelid_patch_vertices": 1476,
+  "faces": 21150,
+  "shape_keys": {
+    "BlinkL": {
+      "moved_vertices": 656,
+      "max_displacement": 0.13957518210084888
+    },
+    "BlinkR": {
+      "moved_vertices": 656,
+      "max_displacement": 0.13957518210084888
+    },
+    "JawOpen": {
+      "moved_vertices": 14760,
+      "max_displacement": 0.05285677348116519
+    },
+    "Smile": {
+      "moved_vertices": 17466,
+      "max_displacement": 0.038259918853072804
+    },
+    "BrowRaise": {
+      "moved_vertices": 14101,
+      "max_displacement": 0.02799469278746893
+    }
+  },
+  "closed_eyelid_front_vertices": {
+    "L": 44,
+    "R": 44
+  },
+  "renderer": "BLENDER_EEVEE",
+  "stills": [
+    "neutral",
+    "blink",
+    "smile",
+    "three-quarter"
+  ],
+  "animation_frames": 36,
+  "fps": 24,
+  "width": 576,
+  "height": 576,
+  "elapsed_seconds": 146.13,
+  "max_rss_kib": 914392,
+  "checks": [
+    "true eye and mouth surface apertures",
+    "eye geometry not scaled for blink",
+    "skin and lash deformation share blink control",
+    "jaw and smile change facial shell vertices"
+  ],
+  "limitations": [
+    "new experimental topology; boundary artifacts possible",
+    "not a production retopology or original rig",
+    "not identical to the reference",
+    "silent deformation test, no speech claim"
+  ]
+}
