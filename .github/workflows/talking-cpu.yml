@@ -1,7 +1,5 @@
 name: Korean Talking Character CPU
 on:
-  push:
-    paths: ['.github/workflows/talking-cpu.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -65,7 +63,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install CPU speech recognition checker
-        run: python -m pip install faster-whisper==1.2.0
+        run: python -m pip install faster-whisper==1.2.0 requests==2.32.5 huggingface_hub==0.36.0
       - name: Independently transcribe generated Korean without expected-text prompt
         run: |
           mkdir -p output
