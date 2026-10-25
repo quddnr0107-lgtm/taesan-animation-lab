@@ -1,0 +1,46 @@
+name: Animation Toolkit Collection
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/collect-toolkit.yml']
+permissions:
+  contents: read
+jobs:
+  collect:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Collect 13 upstream source and model bundles
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python tools/collect_animation_toolkit.py
+      - name: Install isolated CPU inference runtime
+        run: python -m pip install numpy==2.2.6 onnxruntime==1.23.2
+      - name: Probe downloaded audio expression model on CPU
+        run: |
+          timeout 180 python tools/probe_wav2arkit.py || python - <<'PY'
+          import json,pathlib
+          p=pathlib.Path('toolkit/wav2arkit-cpu/cpu-probe.json')
+          if not p.exists():p.write_text(json.dumps({'status':'failed-or-timeout','note':'See job logs; no inference success claimed'}))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: animation-toolkit-sources-${{ github.run_number }}
+          path: toolkit
+          compression-level: 0
+          retention-days: 30
+      - name: Validate collection status
+        run: |
+          python - <<'PY'
+          import json
+          r=json.load(open('toolkit/manifest.json'))
+          print('Downloaded',r['downloaded'],'Failed',r['failed'])
+          for x in r['sources']:
+              if x['status']!='downloaded':print(x['id'],x.get('error'))
+          assert r['downloaded']==13
+          PY
