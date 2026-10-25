@@ -1,0 +1,53 @@
+name: Connected Face CPU Study
+on:
+  workflow_dispatch:
+  push:
+    paths: ['studies/continuous_face.py', '.github/workflows/connected-face.yml']
+permissions:
+  contents: read
+jobs:
+  stills:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 12
+    env:
+      LIBGL_ALWAYS_SOFTWARE: '1'
+      OMP_NUM_THREADS: '4'
+      BLENDER_SYSTEM_DATAFILES: /tmp/blender-source/release/datafiles
+      OCIO: /tmp/blender-source/release/datafiles/colormanagement/config.ocio
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare CPU renderer
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends blender xvfb xauth mesa-utils libgl1-mesa-dri python3-pil
+          git clone --depth 1 --branch v3.0.1 --filter=blob:none --sparse https://github.com/blender/blender.git /tmp/blender-source
+          git -C /tmp/blender-source sparse-checkout set release/datafiles/colormanagement
+          mkdir -p output
+          xvfb-run -a glxinfo -B > output/glxinfo.txt
+          grep -i llvmpipe output/glxinfo.txt
+      - name: Render connected skin pose checks
+        run: xvfb-run -a -s "-screen 0 1280x720x24" blender --factory-startup -b -t 4 --python-exit-code 1 --python studies/continuous_face.py > output/render.log 2>&1
+      - name: Check output and make comparison
+        run: |
+          python3 - <<'PY'
+          from PIL import Image,ImageStat,ImageDraw
+          import json
+          names=['neutral','half-blink','blink','smile','three-quarter']
+          c=Image.new('RGB',(1152,1800),'#eee8df');dr=ImageDraw.Draw(c)
+          for i,n in enumerate(names):
+              im=Image.open('output/'+n+'.png').convert('RGB')
+              st=ImageStat.Stat(im)
+              assert min(st.mean)>10 and max(st.stddev)>10
+              x=i%2*576;y=i//2*600
+              c.paste(im,(x,y+24));dr.text((x+12,y+5),n,fill='black')
+          c.save('output/pose-comparison.jpg',quality=90)
+          r=json.load(open('output/report.json'))
+          assert r['connected_components']==1
+          assert r['integrated_lid_vertices']>500
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: connected-face-${{ github.run_number }}
+          path: output
+          retention-days: 14
