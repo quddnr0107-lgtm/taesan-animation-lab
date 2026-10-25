@@ -1,7 +1,7 @@
 name: Deformable Face CPU Study
 on:
   push:
-    paths: ['.github/workflows/deformable-face.yml']
+    paths: ['.github/workflows/deformable-face.yml', 'studies/face_rig.py']
   workflow_dispatch:
 permissions:
   contents: read
