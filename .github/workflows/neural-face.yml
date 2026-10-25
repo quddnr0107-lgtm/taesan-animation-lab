@@ -1,0 +1,85 @@
+name: Neural Face CPU Comparison
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/neural-face.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  speech:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    env:
+      LIBGL_ALWAYS_SOFTWARE: '1'
+      OMP_NUM_THREADS: '4'
+      BLENDER_SYSTEM_DATAFILES: /tmp/blender-source/release/datafiles
+      OCIO: /tmp/blender-source/release/datafiles/colormanagement/config.ocio
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: connected-face-2
+          path: input
+          github-token: ${{ github.token }}
+          run-id: 40164256182
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          name: animation-toolkit-sources-1
+          path: toolkit
+          github-token: ${{ github.token }}
+          run-id: 40166724355
+      - name: Infer neural expressions and map to the skin rig
+        run: |
+          python -m pip install numpy==2.2.6 onnxruntime==1.23.2 pillow==11.3.0
+          python -m py_compile tools/map_audio_expression.py studies/neural_talking.py
+          python tools/probe_wav2arkit.py
+          python tools/map_audio_expression.py
+          cp toolkit/wav2arkit-cpu/cpu-probe.json output/cpu-probe.json
+      - name: Install CPU renderer
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender ffmpeg xvfb xauth mesa-utils libgl1-mesa-dri
+          git clone --depth 1 --branch v3.0.1 --filter=blob:none --sparse https://github.com/blender/blender.git /tmp/blender-source
+          git -C /tmp/blender-source sparse-checkout set release/datafiles/colormanagement
+      - name: Render skin rig with Korean speech
+        run: |
+          mkdir -p output
+          xvfb-run -a glxinfo -B > output/glxinfo.txt
+          xvfb-run -a -s "-screen 0 1280x720x24" blender --factory-startup --background input/continuous-face.blend -t 4 --python-exit-code 1 --python studies/neural_talking.py > output/render.log 2>&1
+          ffmpeg -y -framerate 24 -i output/frame_%04d.png -i studies/fixtures/004-voice.wav -c:v libx264 -crf 18 -pix_fmt yuv420p -c:a aac -b:a 128k -movflags +faststart output/neural-korean.mp4
+          ffmpeg -y -i results/009-connected-korean.mp4 -i output/neural-korean.mp4 -filter_complex "[0:v]drawtext=text='previous phonetic':x=12:y=12:fontsize=20:fontcolor=white:box=1:boxcolor=black@0.5[a];[1:v]drawtext=text='CPU neural':x=12:y=12:fontsize=20:fontcolor=white:box=1:boxcolor=black@0.5[b];[a][b]hstack=inputs=2[v]" -map "[v]" -map 1:a -c:v libx264 -crf 20 -pix_fmt yuv420p -c:a aac -movflags +faststart output/comparison.mp4
+          ffprobe -v error -show_streams -of json output/neural-korean.mp4 > output/video-check.json
+          python3 - <<'PY'
+          import json
+          r=json.load(open('output/report.json'))
+          streams=json.load(open('output/video-check.json'))['streams']
+          v=next(s for s in streams if s['codec_type']=='video')
+          a=next(s for s in streams if s['codec_type']=='audio')
+          assert int(v['nb_frames'])==77
+          assert abs(float(v['duration'])-float(a['duration']))<.08
+          assert 'llvmpipe' in open('output/glxinfo.txt').read()
+          assert r['frames']==77
+          from PIL import Image,ImageStat
+          from pathlib import Path
+          for f in Path('output').glob('frame_*.png'):
+              st=ImageStat.Stat(Image.open(f).convert('L'))
+              assert st.mean[0]>10 and st.stddev[0]>10
+          c=Image.new('RGB',(1152,600),'#eee8df')
+          for i,n in enumerate([20,55]):
+              c.paste(Image.open('output/frame_%04d.png'%n).convert('RGB'),(i*576,24))
+          c.save('output/neural-frames.jpg',quality=90)
+          m=json.load(open('output/mapping-report.json'))
+          p=json.load(open('output/cpu-probe.json'))
+          assert p['status']=='cpu-inference-passed' and m['silent_frames']>0
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: neural-face-${{ github.run_number }}
+          path: output
+          retention-days: 14
