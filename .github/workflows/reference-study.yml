@@ -1,0 +1,81 @@
+name: Preschool Reference Study
+on:
+  push:
+    paths: ['.github/workflows/reference-study.yml']
+  workflow_dispatch:
+    inputs:
+      still_only:
+        description: '대표 프레임만 먼저 검사'
+        type: boolean
+        default: true
+permissions:
+  contents: read
+concurrency:
+  group: preschool-reference
+  cancel-in-progress: false
+jobs:
+  study:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    env:
+      STUDY_STILL_ONLY: ${{ github.event_name == 'push' && '1' || (inputs.still_only && '1' || '0') }}
+      LIBGL_ALWAYS_SOFTWARE: '1'
+      OMP_NUM_THREADS: '4'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender and CPU OpenGL
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends blender ffmpeg xvfb xauth mesa-utils libgl1-mesa-dri python3-pil
+          mkdir -p output
+          xvfb-run -a glxinfo -B > output/glxinfo.txt
+          grep -Ei 'llvmpipe|softpipe|software rasterizer' output/glxinfo.txt
+          lscpu > output/cpu.txt
+      - name: Render detailed reference study on software CPU
+        run: |
+          xvfb-run -a -s "-screen 0 1280x720x24" /usr/bin/time -v -o output/resource.txt blender --factory-startup -b -t 4 --python-exit-code 1 --python studies/preschool.py > output/render.log 2>&1
+      - name: Check visible hero frame
+        run: |
+          python3 - <<'PY'
+          from PIL import Image, ImageStat
+          import json
+          from pathlib import Path
+          im=Image.open('output/hero.png').convert('RGB')
+          mean=ImageStat.Stat(im).mean
+          assert min(mean)>10 and max(im.getextrema()[0])>100
+          print('Hero RGB mean:',mean)
+          Path('output/pixel-check.json').write_text(json.dumps({'rgb_mean':mean}))
+          PY
+      - name: Encode and verify animated result
+        if: env.STUDY_STILL_ONLY == '0'
+        run: |
+          ffmpeg -hide_banner -loglevel error -framerate 24 -i output/frame_%04d.png -c:v libx264 -crf 18 -pix_fmt yuv420p -movflags +faststart output/preschool-reference-study.mp4
+          ffprobe -v error -show_entries stream=codec_name,width,height,nb_frames:format=duration -of json output/preschool-reference-study.mp4 > output/video-check.json
+          python3 - <<'PY'
+          import json
+          from PIL import Image, ImageChops, ImageStat
+          from pathlib import Path
+          d=json.loads(Path('output/video-check.json').read_text())
+          assert int(d['streams'][0]['nb_frames'])==72 and abs(float(d['format']['duration'])-3)<.1
+          frames=sorted(Path('output').glob('frame_*.png'))
+          assert len(frames)==72
+          assert all(sum(ImageStat.Stat(Image.open(f).convert('RGB')).mean)>30 for f in frames)
+          assert ImageChops.difference(Image.open(frames[0]).convert('RGB'),Image.open(frames[40]).convert('RGB')).getbbox()
+          PY
+      - name: Write measured summary
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          p=Path('output/report.json')
+          if p.exists():
+              with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
+                  f.write('# Reference study\n\nProcedural approximation; no broadcast-quality claim.\n\n'+chr(96)*3+'json\n'+p.read_text()+'\n'+chr(96)*3)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: preschool-study-${{ github.run_number }}
+          path: output/
+          retention-days: 14
