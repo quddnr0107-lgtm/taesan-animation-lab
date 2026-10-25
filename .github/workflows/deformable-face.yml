@@ -7,7 +7,7 @@ permissions:
   contents: read
 concurrency:
   group: deformable-face
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   face_rig:
     runs-on: ubuntu-22.04
