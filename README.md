@@ -36,3 +36,13 @@
 - [002: 6초 CPU 프리뷰 실제 출력 확인](results/002-preview.md) — 렌더 29.35초, 최대 RSS 약 237.4 MiB. [성공 실행과 영상 아티팩트](https://github.com/quddnr0107-lgtm/taesan-animation-lab/actions/runs/40147203271)
 
 두 실험은 해상도·샘플·설정이 달라 동일 조건 속도 비교가 아닙니다. 첫 프레임 밝기·명암 검사를 통과해야 전체 렌더를 진행합니다. 이후 실행은 수동으로만 시작합니다.
+
+## 똘똘이 참고 장면 재현 실험
+
+![대표 이미지](results/003-hero.jpg)
+
+[**3초 결과 영상 MP4**](results/003-reference-study.mp4) · [실험 기록과 원본 대비 차이](results/003-reference-study.md)
+
+CPU llvmpipe 소프트웨어 렌더러로 768×432 / 24fps / 72프레임 출력을 검증했다. 대표 이미지 포함 렌더 241.43초. 이전 단순 시제품보다 세밀한 얼굴·손·의상·실내·동물을 구현했으나 원본과 동일하지 않다. 음성·음소 립싱크 없음.
+
+Actions → **Preschool Reference Study** → Run workflow. 대표 프레임만 먼저 검사 옵션을 끄면 3초 영상을 출력한다.
