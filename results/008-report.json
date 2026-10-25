@@ -1,0 +1,29 @@
+{
+  "experiment": "008-connected-face",
+  "vertices": 25538,
+  "faces": 25214,
+  "connected_components": 1,
+  "integrated_lid_vertices": 1152,
+  "shape_keys": [
+    "BlinkL",
+    "BlinkR",
+    "JawOpen",
+    "Smile",
+    "BrowRaise",
+    "LipRound"
+  ],
+  "stills": [
+    "neutral",
+    "half-blink",
+    "blink",
+    "smile",
+    "three-quarter"
+  ],
+  "elapsed_seconds": 111.85,
+  "max_rss_kib": 1053576,
+  "limitations": [
+    "experimental procedural anatomy",
+    "visual review required; connectivity does not imply likeness",
+    "not original-character or broadcast-quality equivalence"
+  ]
+}
