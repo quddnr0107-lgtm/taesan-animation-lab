@@ -1,0 +1,31 @@
+{
+  "experiment": "009-connected-rig-speech",
+  "frames": 77,
+  "fps": 24,
+  "width": 576,
+  "height": 576,
+  "voice_seconds": 3.1744375,
+  "video_seconds": 3.2083333333333335,
+  "elapsed_seconds": 241.43,
+  "max_rss_kib": 1059988,
+  "mouth_segments": 15,
+  "controls": [
+    "BlinkL",
+    "BlinkR",
+    "JawOpen",
+    "Smile",
+    "BrowRaise",
+    "LipRound"
+  ],
+  "checks": [
+    "skin jaw and lips follow real voice cues",
+    "silent X cues have closed jaw",
+    "eyeball assemblies are not animated or scaled for blink"
+  ],
+  "limitations": [
+    "approximate phonetic mapping",
+    "preset adult voice, not the original actor",
+    "procedural facial proportions and lip anatomy require more work",
+    "not original-character or broadcast-quality equivalence"
+  ]
+}

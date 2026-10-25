@@ -1,6 +1,12 @@
 # 태산이 애니메이션 CPU 실험실
 
-## 최신 실험: 얼굴 피부 리그 + 한국어 말하기
+## 최신 실험: 연결된 얼굴 메시 + 한국어 말하기
+
+[**새 영상**](results/009-connected-korean.mp4) · [이전/이후 비교](results/008-before-after.jpg) · [검수·측정](results/009-connected-speech.md)
+
+머리와 눈꺼풀을 하나의 연결된 메시로 다시 만들고 눈을 안쪽으로 배치했다. 볼 경계선과 닫힌 눈의 눈동자 노출은 줄었지만, 눈 주변 굴곡과 단순한 입 구조가 남아 있다. CPU 렌더 241.43초, 576×576 / 24fps / 77프레임. 입 모양 전환의 수치 개선은 작으며 **원본과 동일한 품질이나 통합 제작 웹페이지 완성을 뜻하지 않는다.**
+
+## 이전 실험: 얼굴 피부 리그 + 한국어 말하기
 
 [**새 말하기 영상**](results/007-skin-rig-korean.mp4) · [프레임 비교](results/007-speech-frames.jpg) · [검수 기록](results/007-skin-rig-speech.md) · [얼굴 포즈 비교](results/006-poses.jpg)
 
