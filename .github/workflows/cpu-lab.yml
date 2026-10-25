@@ -1,0 +1,58 @@
+name: CPU Animation Lab
+on:
+  push:
+    paths: ['scripts/**', '.github/workflows/cpu-lab.yml']
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: '동작 프롬프트: 인사 / 놀람 / 고개를 둘러보기'
+        required: true
+        default: '태산이가 손을 흔들며 인사한다'
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: cpu-animation-lab
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 25
+    env:
+      LAB_PROMPT: ${{ inputs.prompt || '태산이가 손을 흔들며 인사한다' }}
+      OMP_NUM_THREADS: '4'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install official Ubuntu CPU rendering tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends blender ffmpeg
+          mkdir -p output
+          lscpu > output/cpu.txt
+          free -m > output/memory.txt
+      - name: Render procedural character on CPU
+        run: /usr/bin/time -v -o output/resource.txt blender -b -t 4 --python scripts/render.py
+      - name: Encode and verify MP4
+        run: |
+          ffmpeg -hide_banner -loglevel error -framerate 16 -i output/frame_%04d.png -c:v libx264 -pix_fmt yuv420p -movflags +faststart output/taesan-cpu.mp4
+          ffprobe -v error -show_entries stream=codec_name,width,height,nb_frames,r_frame_rate:format=duration -of json output/taesan-cpu.mp4 > output/video-check.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('output/video-check.json').read_text())
+          v=d['streams'][0]
+          assert v['codec_name']=='h264' and int(v['nb_frames'])==96
+          assert abs(float(d['format']['duration'])-6)<.1
+          summary=Path('output/report.json').read_text()
+          import os
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
+              f.write('# CPU animation experiment\n\nProcedural animation only; no generated speech or neural video inference.\n\n'+chr(96)*3+'json\n'+summary+'\n'+chr(96)*3)
+          PY
+      - name: Save videos, scene, frames and diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: taesan-cpu-experiment-${{ github.run_number }}
+          path: output/
+          retention-days: 14
+          if-no-files-found: warn
