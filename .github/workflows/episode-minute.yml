@@ -1,0 +1,168 @@
+name: One Minute Episode CPU
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/episode-minute.yml']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: one-minute-episode
+  cancel-in-progress: false
+jobs:
+  audio:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    env:
+      OMP_NUM_THREADS: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Prepare pinned CPU speech engine
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg libsndfile1
+          git init /tmp/supertonic
+          git -C /tmp/supertonic remote add origin https://github.com/supertone-oss-archive/supertonic.git
+          git -C /tmp/supertonic fetch --depth 1 origin 1e9799e964ea4c0dad7cde993b65c3c813a7b373
+          git -C /tmp/supertonic checkout FETCH_HEAD
+          python -m pip install numpy==2.2.6 onnxruntime==1.23.1 soundfile==0.13.1 huggingface_hub==0.36.0
+          mkdir -p output
+          python -m pip freeze > output/dependencies.txt
+      - name: Generate twelve new Korean lines
+        run: python tools/episode_audio.py > output/speech.log 2>&1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: minute-audio
+          path: output
+          retention-days: 14
+  animation:
+    needs: audio
+    strategy:
+      fail-fast: true
+      max-parallel: 6
+      matrix:
+        shot: [0, 1, 2, 3, 4, 5]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    env:
+      LIBGL_ALWAYS_SOFTWARE: '1'
+      OMP_NUM_THREADS: '4'
+      BLENDER_SYSTEM_DATAFILES: /tmp/blender-source/release/datafiles
+      OCIO: /tmp/blender-source/release/datafiles/colormanagement/config.ocio
+      SHOT_INDEX: ${{ matrix.shot }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: polished-character-2
+          path: input
+          github-token: ${{ github.token }}
+          run-id: 40175412638
+      - uses: actions/download-artifact@v4
+        with:
+          name: minute-audio
+          path: inputaudio
+      - name: Install CPU renderer
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends blender ffmpeg xvfb xauth mesa-utils libgl1-mesa-dri python3-pil
+          git clone --depth 1 --branch v3.0.1 --filter=blob:none --sparse https://github.com/blender/blender.git /tmp/blender-source
+          git -C /tmp/blender-source sparse-checkout set release/datafiles/colormanagement
+      - name: Render ten seconds of new animation
+        run: |
+          mkdir -p output
+          xvfb-run -a glxinfo -B > output/glxinfo.txt
+          xvfb-run -a -s "-screen 0 1280x720x24" blender --factory-startup --background input/polished-scene.blend -t 4 --python-exit-code 1 --python studies/episode_minute.py > output/render.log 2>&1
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageStat
+          import os
+          p=Path('output')/('shot_'+os.environ['SHOT_INDEX'])
+          frames=list(p.glob('frame_*.png'))
+          assert len(frames)==120,len(frames)
+          assert 'llvmpipe' in Path('output/glxinfo.txt').read_text()
+          for f in frames:
+              im=Image.open(f)
+              assert im.size==(768,432)
+              stat=ImageStat.Stat(im.convert('L'))
+              assert stat.mean[0]>10 and stat.stddev[0]>10
+          PY
+          ffmpeg -v error -y -framerate 12 -i output/shot_$SHOT_INDEX/frame_%04d.png -r 24 -c:v libx264 -crf 22 -pix_fmt yuv420p -movflags +faststart output/shot_$SHOT_INDEX/shot.mp4
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: minute-shot-${{ matrix.shot }}
+          path: |
+            output/shot_*/shot.mp4
+            output/shot_*/report.json
+            output/shot_*/frame_0001.png
+            output/shot_*/frame_0060.png
+            output/shot_*/frame_0120.png
+            output/render.log
+            output/glxinfo.txt
+          retention-days: 14
+  speech_review:
+    needs: audio
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v4
+        with:
+          name: minute-audio
+          path: inputaudio
+      - run: python -m pip install faster-whisper==1.2.0 huggingface_hub==0.36.0
+      - run: python tools/check_episode_speech.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: minute-speech-review
+          path: output/asr-check.json
+          retention-days: 30
+  assemble:
+    needs: [audio, animation, speech_review]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: minute-audio
+          path: output
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: minute-shot-*
+          path: shots
+          merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: minute-speech-review
+          path: output
+      - name: Compose captions and verify the full minute
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg fonts-noto-cjk python3-pil
+          python tools/assemble_episode.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: one-minute-episode-${{ github.run_number }}
+          path: |
+            output/episode-minute.mp4
+            output/episode.srt
+            output/episode-timeline.json
+            output/audio-report.json
+            output/video-report.json
+            output/asr-check.json
+            output/contact-sheet.jpg
+            output/speech.log
+            output/dependencies.txt
+          retention-days: 30
+
