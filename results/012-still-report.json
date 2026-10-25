@@ -1,0 +1,50 @@
+{
+  "experiment": "012-polished-cpu-scene",
+  "mode": "stills",
+  "width": 960,
+  "height": 540,
+  "fps": 24,
+  "rendered_frames": 2,
+  "animation_frames": 0,
+  "stills_seconds": 87.78,
+  "elapsed_seconds": 87.78,
+  "color_transform": "Standard",
+  "color_look": "None",
+  "max_rss_kib": 1118704,
+  "rebuilt_lid_vertices": 1152,
+  "jaw_gain": 2.5193041045836395,
+  "controls": {
+    "JawOpen": {
+      "max": 0.65,
+      "max_frame_delta": 0.14566583636505526
+    },
+    "LipRound": {
+      "max": 0.38341451571385066,
+      "max_frame_delta": 0.09136216518834783
+    },
+    "Smile": {
+      "max": 0.14400535235843726,
+      "max_frame_delta": 0.023578114846307355
+    },
+    "BrowRaise": {
+      "max": 0.1998866534459363,
+      "max_frame_delta": 0.010205426176780844
+    }
+  },
+  "changes": [
+    "smooth analytic lid depth",
+    "wider mouth aperture and interior details",
+    "face-scale AO and new soft lights",
+    "Filmic color management",
+    "material and framing adjustments",
+    "post-gate offline smoothing",
+    "authored brow and smile secondary expression"
+  ],
+  "limitations": [
+    "No Gemini or target-image quality equivalence established",
+    "Still review required before full render",
+    "Five-frame filter uses future frames",
+    "Brow and smile secondary animation is authored, not inferred",
+    "Procedural character and preset voice remain; not a completed episode"
+  ]
+}
