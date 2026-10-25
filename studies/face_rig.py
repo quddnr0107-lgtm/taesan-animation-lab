@@ -55,7 +55,7 @@ for side,(ex,ez) in zip(['L','R'],eyes):
     outer=ez+upper*(arch+.025);inner=ez+upper*arch;z=(1-v)*outer+v*inner
     y=-d*math.sqrt(max(.01,1-(x/w)**2-(z/h)**2))-.003
     closed_z=(1-v)*outer+v*ez
-    cap_y=-.490+.070*(u*u+((closed_z-ez)/rz)**2)
+    cap_y=-.490+.020*(u*u+((closed_z-ez)/rz)**2)
     blend=math.sin(v*math.pi/2)**.6
     closed_y=(1-blend)*y+blend*cap_y
     idx=len(vs);vs.append((x,y,z));lid_roles[idx]=(side,(x,closed_y,closed_z))
@@ -86,7 +86,7 @@ def displacement(p,kind,index=None):
   # Lash strip follows the same inner lid margin.
   ex=-.235 if side=='L' else .235;ez=-.005;u=max(-1,min(1,(x-ex)/rx))
   arch=rz*math.sqrt(max(0,1-u*u));offset=z-(ez+arch)
-  return (x,-.490+.070*u*u,ez+offset)
+  return (x,-.490+.020*u*u,ez+offset)
  elif kind=='JawOpen':
   q=max(0,1-(x/.16)**2)*math.exp(-abs(z+.29)/.095)
   dz=(.042 if z>=-.29 else -.048)*q
@@ -126,7 +126,7 @@ for o in bpy.data.objects:
  if o.type=='MESH' and (o.name.startswith('swept bang') or o.name.startswith('side wave')):
   b=bmesh.new();b.from_mesh(o.data);bmesh.ops.recalc_face_normals(b,faces=list(b.faces));b.to_mesh(o.data);b.free()
 cam=base['cam'];cam.animation_data_clear();cam.data.lens=57;base['focus'].location=(0,0,1.87)
-s.render.resolution_x=576;s.render.resolution_y=576;s.eevee.taa_render_samples=16
+s.render.resolution_x=576;s.render.resolution_y=576;s.eevee.taa_render_samples=8
 s.frame_set(1)
 def pose(blink=0,jaw=0,smile=0,brow=0):
  for n,v in [('BlinkL',blink),('BlinkR',blink),('JawOpen',jaw),('Smile',smile),('BrowRaise',brow)]:keys[n].value=v
@@ -148,6 +148,6 @@ for f in range(1,37):
  blink=max(0,1-abs(t-.70)/.08)
  for n,v in [('BlinkL',blink),('BlinkR',blink),('JawOpen',jaw),('Smile',smile),('BrowRaise',smile*.5)]:keys[n].value=v;keys[n].keyframe_insert('value',frame=f)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'deformable-face.blend'))
-s.eevee.taa_render_samples=6;s.render.filepath=str(out/'frame_');bpy.ops.render.render(animation=True)
+s.eevee.taa_render_samples=4;s.render.filepath=str(out/'frame_');bpy.ops.render.render(animation=True)
 report={'experiment':'006-deformable-face','vertices':len(vs),'eyelid_patch_vertices':len(lid_roles),'faces':len(faces),'shape_keys':motion,'closed_eyelid_front_vertices':closure_check,'renderer':s.render.engine,'stills':[x[0] for x in views],'animation_frames':36,'fps':24,'width':576,'height':576,'elapsed_seconds':round(time.monotonic()-T,2),'max_rss_kib':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,'checks':['true eye and mouth surface apertures','eye geometry not scaled for blink','skin and lash deformation share blink control','jaw and smile change facial shell vertices'],'limitations':['new experimental topology; boundary artifacts possible','not a production retopology or original rig','not identical to the reference','silent deformation test, no speech claim']}
 (out/'report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
