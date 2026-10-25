@@ -1,0 +1,60 @@
+name: Deformable Face CPU Study
+on:
+  push:
+    paths: ['.github/workflows/deformable-face.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: deformable-face
+  cancel-in-progress: false
+jobs:
+  face_rig:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    env:
+      LIBGL_ALWAYS_SOFTWARE: '1'
+      OMP_NUM_THREADS: '4'
+      BLENDER_SYSTEM_DATAFILES: /tmp/blender-source/release/datafiles
+      OCIO: /tmp/blender-source/release/datafiles/colormanagement/config.ocio
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare CPU renderer
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends blender ffmpeg xvfb xauth mesa-utils libgl1-mesa-dri python3-pil
+          git clone --depth 1 --branch v3.0.1 --filter=blob:none --sparse https://github.com/blender/blender.git /tmp/blender-source
+          git -C /tmp/blender-source sparse-checkout set release/datafiles/colormanagement
+          mkdir -p output
+          xvfb-run -a glxinfo -B > output/glxinfo.txt
+          grep -Ei 'llvmpipe|softpipe|software rasterizer' output/glxinfo.txt
+      - name: Render four geometry checks and deformation video
+        run: xvfb-run -a -s "-screen 0 1280x720x24" blender --factory-startup -b -t 4 --python-exit-code 1 --python studies/face_rig.py > output/render.log 2>&1
+      - name: Validate real geometry changes and encode test
+        run: |
+          ffmpeg -hide_banner -loglevel error -framerate 24 -i output/frame_%04d.png -c:v libx264 -crf 18 -pix_fmt yuv420p -movflags +faststart output/face-deformation.mp4
+          ffprobe -v error -show_entries stream=codec_name,nb_frames,width,height:format=duration -of json output/face-deformation.mp4 > output/video-check.json
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageStat,ImageChops,ImageDraw
+          import json
+          names=['neutral','blink','smile','three-quarter']
+          c=Image.new('RGB',(1152,1200),'#eee8df');dr=ImageDraw.Draw(c)
+          for i,n in enumerate(names):
+              im=Image.open('output/'+n+'.png').convert('RGB')
+              assert min(ImageStat.Stat(im).mean)>10
+              x=(i%2)*576;y=(i//2)*600
+              c.paste(im,(x,y+24));dr.text((x+12,y+5),n,fill='black')
+          c.save('output/pose-comparison.jpg',quality=90)
+          assert ImageChops.difference(Image.open('output/neutral.png').convert('RGB'),Image.open('output/blink.png').convert('RGB')).getbbox()
+          r=json.loads(Path('output/report.json').read_text());v=json.loads(Path('output/video-check.json').read_text())
+          assert len(r['shape_keys'])==5 and all(x['moved_vertices']>50 for x in r['shape_keys'].values())
+          assert len(list(Path('output').glob('frame_*.png')))==36 and int(v['streams'][0]['nb_frames'])==36
+          assert abs(float(v['format']['duration'])-1.5)<.05
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: deformable-face-${{ github.run_number }}
+          path: output/
+          retention-days: 14
