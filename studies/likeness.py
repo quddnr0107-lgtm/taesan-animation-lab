@@ -92,10 +92,12 @@ s.view_settings.exposure=-.2
 cam=g['cam'];cam.animation_data_clear();cam.location=(.26,-4.50,2.23);cam.data.lens=58
 g['focus'].location=(0,0,1.90)
 s.render.resolution_x=640;s.render.resolution_y=640;s.eevee.taa_render_samples=24
-bpy.context.view_layer.update();s.render.filepath=str(out/f'variant-{name}.png')
-bpy.ops.wm.save_as_mainfile(filepath=str(out/f'variant-{name}.blend'))
-bpy.ops.render.render(write_still=True)
-img=bpy.data.images.load(str((out/f'variant-{name}.png').resolve()));px=list(img.pixels);vals=[v for i,v in enumerate(px) if i%4<3]
-check={'mean':sum(vals)/len(vals),'range':max(vals)-min(vals)};assert check['mean']>.02 and check['range']>.1
-report={'experiment':'004-likeness-variants','variant':name,'parameters':cfg,'width':640,'height':640,'frames_rendered':1,'elapsed_seconds':round(time.monotonic()-T,2),'max_rss_kib':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,'pixel_check':check,'improvements_under_test':['cheek width and chin','flatter eye depth and iris proportion','blended blush','continuous swept hair locks','matte cloth and reduced reflections'],'limitations':['manual procedural likeness study','no numeric identity score claimed','not identical to original','portrait still only; no voice or lip sync']}
-(out/'report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
+if os.environ.get('FIT_BUILD_ONLY')!='1':
+ bpy.context.view_layer.update();s.render.filepath=str(out/f'variant-{name}.png')
+ bpy.ops.wm.save_as_mainfile(filepath=str(out/f'variant-{name}.blend'))
+ bpy.ops.render.render(write_still=True)
+ img=bpy.data.images.load(str((out/f'variant-{name}.png').resolve()));px=list(img.pixels);vals=[v for i,v in enumerate(px) if i%4<3]
+ check={'mean':sum(vals)/len(vals),'range':max(vals)-min(vals)};assert check['mean']>.02 and check['range']>.1
+ report={'experiment':'004-likeness-variants','variant':name,'parameters':cfg,'width':640,'height':640,'frames_rendered':1,'elapsed_seconds':round(time.monotonic()-T,2),'max_rss_kib':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,'pixel_check':check,'improvements_under_test':['cheek width and chin','flatter eye depth and iris proportion','blended blush','continuous swept hair locks','matte cloth and reduced reflections'],'limitations':['manual procedural likeness study','no numeric identity score claimed','not identical to original','portrait still only; no voice or lip sync']}
+ (out/'report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
+ 
