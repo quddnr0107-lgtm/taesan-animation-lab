@@ -22,7 +22,7 @@ for j in range(V-2):
 for i in range(U):fs.append(((V-2)*U+i,bottom,(V-2)*U+(i+1)%U))
 def in_hole(x,y,z):
  if y>=0:return False
- return any(((x-ex)/outer[0])**2+((z-ez)/outer[1])**2<1 for ex,ez in eyes) or (x/.090)**2+((z+.29)/.020)**2<1
+ return any(((x-ex)/outer[0])**2+((z-ez)/outer[1])**2<1 for ex,ez in eyes) or (x/.090)**2+((z+.29)/.008)**2<1
 fs=[f for f in fs if not in_hole(*[sum(vs[k][a] for k in f)/len(f) for a in range(3)])]
 edges=Counter(tuple(sorted((f[i],f[(i+1)%len(f)]))) for f in fs for i in range(len(f)))
 boundary=set(k for e,n in edges.items() if n==1 for k in e)
@@ -56,17 +56,17 @@ for side,(ex,ez) in zip(['L','R'],eyes):
    y=surface_y(x,z)-.002*math.sin(t*math.pi/2)
    closed_z=ez+(1-t)*outer[1]*math.sin(a)
    # Minimal eye clearance: avoid forcing the entire closed lid into a round cap.
-   target_y=min(surface_y(x,closed_z)-.002,eye_front(x,closed_z)-.004)
-   closed_y=(1-t)*surface_y(x,closed_z)+t*target_y
+   target_y=min(surface_y(x,closed_z)-.002,eye_front(x,closed_z)-.010)
+   closed_y=target_y
    k=len(vs);vs.append((x,y,z));roles[k]=(side,(x,closed_y,closed_z));current.append(k)
   for i in range(len(ids)):fs.append((prev[i],prev[(i+1)%len(ids)],current[(i+1)%len(ids)],current[i]))
   prev=current
  rings[side]=prev
 # Smooth the mouth aperture boundary and add a short skin rim inside the same mesh.
 ids=[k for k in boundary if vs[k][1]<0 and abs(vs[k][0])<.13 and abs(vs[k][2]+.29)<.05]
-ids.sort(key=lambda k:math.atan2((vs[k][2]+.29)/.020,vs[k][0]/.090));assert len(ids)>10
+ids.sort(key=lambda k:math.atan2((vs[k][2]+.29)/.008,vs[k][0]/.090));assert len(ids)>10
 for k in ids:
- a=math.atan2((vs[k][2]+.29)/.020,vs[k][0]/.090);x=.090*math.cos(a);z=-.29+.020*math.sin(a);vs[k]=(x,surface_y(x,z),z)
+ a=math.atan2((vs[k][2]+.29)/.008,vs[k][0]/.090);x=.090*math.cos(a);z=-.29+.008*math.sin(a);vs[k]=(x,surface_y(x,z),z)
 me=bpy.data.meshes.new('continuous facial topology');me.from_pydata(vs,[],fs);me.update()
 import bmesh
 bm=bmesh.new();bm.from_mesh(me);bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(me);bm.free()
