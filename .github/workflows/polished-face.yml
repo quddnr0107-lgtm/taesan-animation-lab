@@ -9,6 +9,7 @@ on:
   push:
     paths:
       - '.github/workflows/polished-face.yml'
+      - 'studies/polished_scene.py'
 permissions:
   contents: read
   actions: read

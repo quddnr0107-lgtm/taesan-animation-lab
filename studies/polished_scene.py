@@ -107,7 +107,13 @@ def ellipsoid(name, location, scale, material_name):
     bpy.ops.mesh.primitive_uv_sphere_add(segments=32,ring_count=20)
     obj=bpy.context.object; obj.name=name; obj.parent=head
     obj.location=location; obj.scale=scale
-    obj.data.materials.append(bpy.data.materials[material_name])
+    mat=bpy.data.materials.get(material_name)
+    if mat is None:
+        mat=bpy.data.materials.new(material_name); mat.use_nodes=True
+        mat.diffuse_color=(.55,.075,.11,1)
+        mat.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value=mat.diffuse_color
+        mat.node_tree.nodes['Principled BSDF'].inputs['Roughness'].default_value=.6
+    obj.data.materials.append(mat)
     for poly in obj.data.polygons: poly.use_smooth=True
     return obj
 
@@ -133,8 +139,13 @@ for name,loc,energy,size,color in [
     light=bpy.context.object; light.name=name
     light.data.energy=energy; light.data.size=size; light.data.color=color
     light.rotation_euler=(Vector((0,0,1.8))-light.location).to_track_quat('-Z','Y').to_euler()
-s.view_settings.view_transform='Filmic'
-s.view_settings.look='Medium High Contrast'; s.view_settings.exposure=.55
+# The distro build exposes Standard only even with the supplied OCIO data.
+# Select only advertised transforms and record the actual choice.
+views=s.view_settings.bl_rna.properties['view_transform'].enum_items.keys()
+s.view_settings.view_transform='Filmic' if 'Filmic' in views else 'Standard'
+looks=s.view_settings.bl_rna.properties['look'].enum_items.keys()
+if 'Medium High Contrast' in looks: s.view_settings.look='Medium High Contrast'
+s.view_settings.exposure=.55 if s.view_settings.view_transform=='Filmic' else -.25
 s.view_settings.gamma=1
 s.render.resolution_x=int(os.environ.get('WIDTH','960'))
 s.render.resolution_y=int(os.environ.get('HEIGHT','540'))
@@ -209,6 +220,7 @@ report={'experiment':'012-polished-cpu-scene','mode':'stills' if still_only else
         'width':s.render.resolution_x,'height':s.render.resolution_y,'fps':24,
         'rendered_frames':2 if still_only else len(source)+2,'animation_frames':0 if still_only else len(source),
         'stills_seconds':stills_seconds,'elapsed_seconds':round(time.monotonic()-started,2),
+        'color_transform':s.view_settings.view_transform,'color_look':s.view_settings.look,
         'max_rss_kib':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
         'rebuilt_lid_vertices':lid_count,'jaw_gain':gain,'controls':stats,
         'changes':['smooth analytic lid depth','wider mouth aperture and interior details',
