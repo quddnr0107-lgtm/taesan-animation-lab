@@ -1,7 +1,5 @@
 name: CPU Animation Lab
 on:
-  push:
-    paths: ['scripts/**', '.github/workflows/cpu-lab.yml']
   workflow_dispatch:
     inputs:
       prompt:
@@ -31,7 +29,7 @@ jobs:
           lscpu > output/cpu.txt
           free -m > output/memory.txt
       - name: Render procedural character on CPU
-        run: /usr/bin/time -v -o output/resource.txt blender -b -t 4 --python scripts/render.py
+        run: /usr/bin/time -v -o output/resource.txt blender --factory-startup -b -t 4 --python scripts/render.py
       - name: Encode and verify MP4
         run: |
           ffmpeg -hide_banner -loglevel error -framerate 16 -i output/frame_%04d.png -c:v libx264 -pix_fmt yuv420p -movflags +faststart output/taesan-cpu.mp4
