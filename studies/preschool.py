@@ -9,7 +9,7 @@ s.eevee.use_gtao=True;s.eevee.gtao_distance=3;s.eevee.gtao_factor=1.12
 s.eevee.use_soft_shadows=True;s.eevee.taa_render_samples=64
 s.render.resolution_x=768;s.render.resolution_y=432;s.render.resolution_percentage=100
 s.render.fps=24;s.frame_start=1;s.frame_end=72
-s.view_settings.view_transform='Standard';s.view_settings.look='Medium High Contrast';s.view_settings.exposure=0;s.view_settings.gamma=1
+s.view_settings.view_transform='Standard';s.view_settings.look='None';s.view_settings.exposure=0;s.view_settings.gamma=1
 s.world.use_nodes=True;s.world.node_tree.nodes['Background'].inputs[0].default_value=(.48,.56,.67,1);s.world.node_tree.nodes['Background'].inputs[1].default_value=.45
 s.render.image_settings.file_format='PNG';s.render.film_transparent=False
 
