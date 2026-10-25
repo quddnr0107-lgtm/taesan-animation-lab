@@ -1,0 +1,265 @@
+{
+  "status": "control-review-passed",
+  "scope": "Numerical control review only; not visual or Korean phoneme accuracy",
+  "baseline_method": "Reconstruct experiment 009 cue tables and 45ms edge smoothing",
+  "inputs": {
+    "baseline_cues_sha256": "468c71613edda9abc11bda94007f265fefc3d2007a9f9e5616e9dcc58779bd68",
+    "neural_controls_sha256": "515624307ddc9d42cc134545547ef17c10e1e1753295a57369470a87e0afafcd"
+  },
+  "frames": 77,
+  "fps": 24,
+  "gate_closed_frames": 36,
+  "gate_closed_frame_numbers": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    59,
+    60,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77
+  ],
+  "gate_closed_mouth_controls_all_zero": true,
+  "gate_closed_max": {
+    "JawOpen": 0.0,
+    "LipRound": 0.0,
+    "Smile": 0.0
+  },
+  "brow_raise_all_zero": true,
+  "neural_stats": {
+    "JawOpen": {
+      "min": 0.0,
+      "max": 0.2831931208239662,
+      "range": 0.2831931208239662,
+      "nonzero_frames": 39,
+      "max_frame_delta": 0.2733560861481561,
+      "range_normalized_max_frame_delta": 0.9652638642944832,
+      "largest_transition": {
+        "from_frame": 60,
+        "to_frame": 61,
+        "from_value": 0.0,
+        "to_value": 0.2733560861481561,
+        "from_gate": 0.0,
+        "to_gate": 1.0,
+        "from_rms": 0.0014761384991950639,
+        "to_rms": 0.018677909977598117
+      },
+      "configured_cap": 0.9,
+      "cap_frames": 0,
+      "cap_fraction": 0.0
+    },
+    "LipRound": {
+      "min": 0.0,
+      "max": 0.40642119582494096,
+      "range": 0.40642119582494096,
+      "nonzero_frames": 41,
+      "max_frame_delta": 0.1298017440835635,
+      "range_normalized_max_frame_delta": 0.3193773981696402,
+      "largest_transition": {
+        "from_frame": 32,
+        "to_frame": 33,
+        "from_value": 0.0,
+        "to_value": 0.1298017440835635,
+        "from_gate": 0.0,
+        "to_gate": 1.0,
+        "from_rms": 0.0009888906463573228,
+        "to_rms": 0.06657288924229832
+      },
+      "configured_cap": 0.7,
+      "cap_frames": 0,
+      "cap_fraction": 0.0
+    },
+    "Smile": {
+      "min": 0.0,
+      "max": 0.06703367785116036,
+      "range": 0.06703367785116036,
+      "nonzero_frames": 14,
+      "max_frame_delta": 0.021269185495873286,
+      "range_normalized_max_frame_delta": 0.31729104202068054,
+      "largest_transition": {
+        "from_frame": 55,
+        "to_frame": 56,
+        "from_value": 0.04443855843196312,
+        "to_value": 0.023169372936089835,
+        "from_gate": 1.0,
+        "to_gate": 1.0,
+        "from_rms": 0.02668489556210321,
+        "to_rms": 0.040091008051768885
+      },
+      "configured_cap": 0.25,
+      "cap_frames": 0,
+      "cap_fraction": 0.0
+    },
+    "BrowRaise": {
+      "min": 0.0,
+      "max": 0.0,
+      "range": 0.0,
+      "nonzero_frames": 0,
+      "max_frame_delta": 0.0,
+      "range_normalized_max_frame_delta": null,
+      "largest_transition": {
+        "from_frame": 1,
+        "to_frame": 2,
+        "from_value": 0.0,
+        "to_value": 0.0,
+        "from_gate": 0.0,
+        "to_gate": 0.0,
+        "from_rms": 8.357582969744355e-06,
+        "to_rms": 8.092194914091653e-06
+      },
+      "configured_cap": 0.15,
+      "cap_frames": 0,
+      "cap_fraction": 0.0
+    },
+    "BlinkL": {
+      "min": 0,
+      "max": 1.0,
+      "range": 1.0,
+      "nonzero_frames": 6,
+      "max_frame_delta": 0.5,
+      "range_normalized_max_frame_delta": 0.5,
+      "largest_transition": {
+        "from_frame": 26,
+        "to_frame": 27,
+        "from_value": 0,
+        "to_value": 0.5,
+        "from_gate": 0.0,
+        "to_gate": 0.0,
+        "from_rms": 0.00015614651441876203,
+        "to_rms": 0.00024308632657520923
+      }
+    },
+    "BlinkR": {
+      "min": 0,
+      "max": 1.0,
+      "range": 1.0,
+      "nonzero_frames": 6,
+      "max_frame_delta": 0.5,
+      "range_normalized_max_frame_delta": 0.5,
+      "largest_transition": {
+        "from_frame": 26,
+        "to_frame": 27,
+        "from_value": 0,
+        "to_value": 0.5,
+        "from_gate": 0.0,
+        "to_gate": 0.0,
+        "from_rms": 0.00015614651441876203,
+        "to_rms": 0.00024308632657520923
+      }
+    }
+  },
+  "comparison": {
+    "JawOpen": {
+      "baseline": {
+        "min": 0,
+        "max": 0.7,
+        "range": 0.7,
+        "nonzero_frames": 44,
+        "max_frame_delta": 0.5021673525377237,
+        "range_normalized_max_frame_delta": 0.7173819321967482,
+        "largest_transition": {
+          "from_frame": 58,
+          "to_frame": 59,
+          "from_value": 0.6821673525377236,
+          "to_value": 0.18
+        }
+      },
+      "neural": {
+        "min": 0.0,
+        "max": 0.2831931208239662,
+        "range": 0.2831931208239662,
+        "nonzero_frames": 39,
+        "max_frame_delta": 0.2733560861481561,
+        "range_normalized_max_frame_delta": 0.9652638642944832,
+        "largest_transition": {
+          "from_frame": 60,
+          "to_frame": 61,
+          "from_value": 0.0,
+          "to_value": 0.2733560861481561,
+          "from_gate": 0.0,
+          "to_gate": 1.0,
+          "from_rms": 0.0014761384991950639,
+          "to_rms": 0.018677909977598117
+        },
+        "configured_cap": 0.9,
+        "cap_frames": 0,
+        "cap_fraction": 0.0
+      },
+      "absolute_delta_decreased": true,
+      "range_normalized_delta_decreased": false
+    },
+    "LipRound": {
+      "baseline": {
+        "min": 0,
+        "max": 1,
+        "range": 1,
+        "nonzero_frames": 13,
+        "max_frame_delta": 0.9919727683788043,
+        "range_normalized_max_frame_delta": 0.9919727683788043,
+        "largest_transition": {
+          "from_frame": 23,
+          "to_frame": 24,
+          "from_value": 0.995986384189402,
+          "to_value": 0.004013615810597633
+        }
+      },
+      "neural": {
+        "min": 0.0,
+        "max": 0.40642119582494096,
+        "range": 0.40642119582494096,
+        "nonzero_frames": 41,
+        "max_frame_delta": 0.1298017440835635,
+        "range_normalized_max_frame_delta": 0.3193773981696402,
+        "largest_transition": {
+          "from_frame": 32,
+          "to_frame": 33,
+          "from_value": 0.0,
+          "to_value": 0.1298017440835635,
+          "from_gate": 0.0,
+          "to_gate": 1.0,
+          "from_rms": 0.0009888906463573228,
+          "to_rms": 0.06657288924229832
+        },
+        "configured_cap": 0.7,
+        "cap_frames": 0,
+        "cap_fraction": 0.0
+      },
+      "absolute_delta_decreased": true,
+      "range_normalized_delta_decreased": true
+    }
+  },
+  "limitations": [
+    "Gate-closed means the configured RMS threshold, not verified perceptual silence",
+    "Lower absolute deltas may result from smaller motion amplitude",
+    "Range-normalized deltas do not establish perceptual smoothness",
+    "Reconstructed baseline uses the current published experiment 009 recipe"
+  ]
+}

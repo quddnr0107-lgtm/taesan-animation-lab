@@ -1,0 +1,77 @@
+{
+  "method": "CPU neural audio expressions with silent baseline subtraction, offline smoothing and audio energy gate",
+  "voice_sha256": "726d0ddde1e3f8753a1ca3d9e5c71a1531e314e7ea5500aa42d5f84b874dd2bb",
+  "source_frames": 96,
+  "source_fps": 30,
+  "source_channels": 52,
+  "target_frames": 77,
+  "target_fps": 24,
+  "target_controls": 6,
+  "neural_controls": [
+    "JawOpen",
+    "LipRound",
+    "Smile",
+    "BrowRaise"
+  ],
+  "procedural_controls": [
+    "BlinkL",
+    "BlinkR"
+  ],
+  "mapping": {
+    "JawOpen": [
+      "jawOpen"
+    ],
+    "LipRound": [
+      "mouthFunnel",
+      "mouthPucker"
+    ],
+    "Smile": [
+      "mouthSmileLeft",
+      "mouthSmileRight"
+    ],
+    "BrowRaise": [
+      "browInnerUp",
+      "browOuterUpLeft",
+      "browOuterUpRight"
+    ]
+  },
+  "silent_frames": 36,
+  "stats": {
+    "JawOpen": {
+      "min": 0.0,
+      "max": 0.2831931208239662,
+      "max_frame_delta": 0.2733560861481561
+    },
+    "LipRound": {
+      "min": 0.0,
+      "max": 0.40642119582494096,
+      "max_frame_delta": 0.1298017440835635
+    },
+    "Smile": {
+      "min": 0.0,
+      "max": 0.06703367785116036,
+      "max_frame_delta": 0.021269185495873286
+    },
+    "BrowRaise": {
+      "min": 0.0,
+      "max": 0.0,
+      "max_frame_delta": 0.0
+    },
+    "BlinkL": {
+      "min": 0,
+      "max": 1.0,
+      "max_frame_delta": 0.5
+    },
+    "BlinkR": {
+      "min": 0,
+      "max": 1.0,
+      "max_frame_delta": 0.5
+    }
+  },
+  "limitations": [
+    "Six authored controls cannot reproduce all 52 ARKit expressions",
+    "Timed blinks are not model-generated",
+    "Offline centered filter uses future frames",
+    "No Korean phoneme accuracy or visual quality claim from coefficient checks"
+  ]
+}

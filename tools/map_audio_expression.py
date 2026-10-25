@@ -4,6 +4,9 @@ from pathlib import Path
 import numpy as np
 p=Path('toolkit/wav2arkit-cpu');out=Path('output');out.mkdir(exist_ok=True)
 voice=Path('studies/fixtures/004-voice.wav')
+probe=json.loads((p/'cpu-probe.json').read_text())
+if probe.get('status')!='cpu-inference-passed':
+ raise RuntimeError('CPU inference failed; refusing to reuse cached expression coefficients')
 raw=np.asarray(json.loads((p/'korean-coefficients.json').read_text()),dtype=float)[0]
 silence=np.asarray(json.loads((p/'silence-coefficients.json').read_text()),dtype=float)[0]
 assert raw.shape[1]==52 and np.isfinite(raw).all()

@@ -1,0 +1,17 @@
+{
+  "experiment": "011-neural-connected-speech",
+  "frames": 77,
+  "fps": 24,
+  "width": 576,
+  "height": 576,
+  "elapsed_seconds": 196.97,
+  "max_rss_kib": 1070960,
+  "geometry": "unchanged connected-face-2 mesh",
+  "controls_source": "neural-controls.json",
+  "limitations": [
+    "Experimental six-control projection, not a full 52-expression rig",
+    "Preset adult voice, not original actor",
+    "Closed-eyelid folds and simplified facial anatomy remain",
+    "Not reference-equivalent animation"
+  ]
+}
