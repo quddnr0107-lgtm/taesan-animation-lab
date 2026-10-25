@@ -1,5 +1,12 @@
 # 태산이 애니메이션 CPU 실험실
 
+## 최신: 얼굴·머리 수정 + 실제 한국어 말하기
+
+[**한국어 말하기 영상**](results/005-korean-talking-B.mp4) · [얼굴 A/B/C 비교](results/004-variants.jpg) · [실험 기록](results/004-likeness-and-speech.md)
+
+Blender EEVEE / Mesa llvmpipe / Supertonic 3 / Rhubarb / faster-whisper를 CPU에서 실제 연결·검증했다. 한국어 대사와 입 모양 15구간, 77프레임, 768×432 영상. 독립 받아쓰기는 문장부호·공백 제외 입력과 일치했다. 원본과 동일한 외형·목소리·연기 또는 자동 다음 편 제작 완성도는 아니다.
+
+
 프롬프트 기반 애니메이션 제작툴을 위한 공개 실험 저장소입니다. 첫 실험은 **Blender Cycles CPU 렌더링**입니다. 외부 생성 API나 GPU 없이 자체 제작한 절차형 캐릭터를 움직입니다.
 
 ## 실행하기
