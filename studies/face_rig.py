@@ -51,7 +51,7 @@ def displacement(p,kind):
   ex=-.235 if kind.endswith('L') else .235;ez=-.005
   r=math.sqrt(((x-ex)/rx)**2+((z-ez)/rz)**2)
   q=math.exp(-((r-1)/.58)**2)*math.exp(-((x-ex)/.23)**6)
-  dz=-(z-ez)*.985*q;dy=-.008*q
+  dz=-(z-ez)*.985*q;dy=-.060*q
  elif kind=='JawOpen':
   q=max(0,1-(x/.16)**2)*math.exp(-abs(z+.29)/.095)
   dz=(.042 if z>=-.29 else -.048)*q
@@ -66,6 +66,12 @@ face.shape_key_add(name='Basis');keys={}
 for kind in ['BlinkL','BlinkR','JawOpen','Smile','BrowRaise']:
  k=face.shape_key_add(name=kind);keys[kind]=k
  for i,v in enumerate(vs):k.data[i].co=displacement(v,kind)
+# Closed eyelid skin must sit in front of the iris, not pass behind it.
+closure_check={}
+for side,ex in [('L',-.235),('R',.235)]:
+ pts=[p.co for p in keys['Blink'+side].data if abs(p.co.x-ex)<.035 and abs(p.co.z+.005)<.035 and p.co.y<-.46]
+ closure_check[side]=len(pts)
+ assert len(pts)>5,'Closed skin does not cover the iris depth'
 # Pupil geometry remains unchanged during the blink. Skin closes over the eyeballs.
 for e in base['eyes']:e.animation_data_clear()
 base['ell']('inner mouth cavity',(0,-.31,-.29),(.14,.045,.13),base['mouthmat'],head)
@@ -108,5 +114,5 @@ for f in range(1,37):
  for n,v in [('BlinkL',blink),('BlinkR',blink),('JawOpen',jaw),('Smile',smile),('BrowRaise',smile*.5)]:keys[n].value=v;keys[n].keyframe_insert('value',frame=f)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'deformable-face.blend'))
 s.eevee.taa_render_samples=6;s.render.filepath=str(out/'frame_');bpy.ops.render.render(animation=True)
-report={'experiment':'006-deformable-face','vertices':len(vs),'faces':len(faces),'shape_keys':motion,'renderer':s.render.engine,'stills':[x[0] for x in views],'animation_frames':36,'fps':24,'width':576,'height':576,'elapsed_seconds':round(time.monotonic()-T,2),'max_rss_kib':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,'checks':['true eye and mouth surface apertures','eye geometry not scaled for blink','skin and lash deformation share blink control','jaw and smile change facial shell vertices'],'limitations':['new experimental topology; boundary artifacts possible','not a production retopology or original rig','not identical to the reference','silent deformation test, no speech claim']}
+report={'experiment':'006-deformable-face','vertices':len(vs),'faces':len(faces),'shape_keys':motion,'closed_eyelid_front_vertices':closure_check,'renderer':s.render.engine,'stills':[x[0] for x in views],'animation_frames':36,'fps':24,'width':576,'height':576,'elapsed_seconds':round(time.monotonic()-T,2),'max_rss_kib':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,'checks':['true eye and mouth surface apertures','eye geometry not scaled for blink','skin and lash deformation share blink control','jaw and smile change facial shell vertices'],'limitations':['new experimental topology; boundary artifacts possible','not a production retopology or original rig','not identical to the reference','silent deformation test, no speech claim']}
 (out/'report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
