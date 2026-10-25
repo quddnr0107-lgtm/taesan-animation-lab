@@ -14,6 +14,14 @@ import bmesh
 back=base['ell']('back skull',(0,0,0),(.66,.47,.59),base['skin'],head)
 bm=bmesh.new();bm.from_mesh(back.data);bmesh.ops.delete(bm,geom=[v for v in bm.verts if v.co.y<0],context='VERTS');bm.to_mesh(back.data);bm.free()
 w,d,h=.66,.47,.59;N=176;M=160;vs=[];lookup={};faces=[]
+def jaw_taper(z):return 1-.16*max(0,min(1,(-z-.15)/.44))**.75
+for v in back.data.vertices:v.co.x*=jaw_taper(v.co.z*h)
+# Reduce exposed white rim and seat the dark iris behind the skin opening.
+for e in base['eyes']:
+ for o in e.children:
+  if o.name.startswith('iris'):o.scale.x=.136;o.scale.z=.150
+  elif o.name.startswith('pupil'):o.scale.x=.080;o.scale.z=.103
+p=base['iris'].node_tree.nodes['Principled BSDF'];p.inputs['Base Color'].default_value=(.075,.025,.010,1)
 eyes=[(-.235,-.005),(.235,-.005)];rx,rz=.121,.125
 for j in range(M+1):
  z=-h+2*h*j/M
@@ -24,6 +32,7 @@ for j in range(M+1):
   # Cheek volume and a shallow nasal bridge are part of the same mesh.
   y-=.012*math.exp(-((abs(x)-.34)/.17)**2-((z+.16)/.16)**2)
   y-=.020*math.exp(-(x/.095)**2-((z+.10)/.19)**2)
+  x*=jaw_taper(z)
   lookup[i,j]=len(vs);vs.append((x,y,z))
 for j in range(M):
  for i in range(N):
