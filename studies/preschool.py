@@ -143,6 +143,10 @@ bird=empty('bird',(1.55,.02,1.12))
 ell('bird body',(0,0,0),(.13,.11,.20),green,bird);ell('bird head',(0,-.025,.19),(.13,.115,.13),lime,bird)
 ell('beak',(0,-.139,.17),(.035,.06,.04),trim,bird)
 for x in [-.075,.075]:ell('bird eye',(x,-.103,.21),(.015,.01,.022),black,bird)
+for side in [-1,1]:
+ ell('bird wing',(side*.115,0,-.01),(.035,.10,.12),green,bird)
+ curve('bird leg',[(side*.05,0,-.15),(side*.05,-.005,-.23)],.012,trim,bird)
+ curve('bird toes',[(side*.05-.025,-.04,-.23),(side*.05,0,-.23),(side*.05+.025,-.04,-.23)],.009,trim,bird)
 # Toy kitchen and utensils on the left.
 box('toy kitchen',(-1.70,.05,.50),(1.04,.56,.90),cream,.08)
 box('toy counter',(-1.70,-.02,.98),(1.15,.69,.10),yellow if 'yellow' in globals() else cream,.06)
@@ -182,7 +186,9 @@ s.render.filepath=str(out/'hero.png');bpy.ops.render.render(write_still=True)
 im=bpy.data.images.load(str((out/'hero.png').resolve()));px=list(im.pixels);rgb=[v for i,v in enumerate(px) if i%4<3]
 check={'mean':sum(rgb)/len(rgb),'range':max(rgb)-min(rgb)};(out/'visual-check.json').write_text(json.dumps(check))
 assert check['mean']>.03 and check['range']>.15,'Blank hero frame'
+still_elapsed=round(time.monotonic()-T,2)
 if os.environ.get('STUDY_STILL_ONLY')!='1':
+ s.eevee.taa_render_samples=8
  s.render.filepath=str(out/'frame_');bpy.ops.render.render(animation=True)
-report={'experiment':'003-reference-study','renderer':s.render.engine,'device':'CPU software OpenGL; see glxinfo.txt','width':768,'height':432,'frames':72,'fps':24,'duration':3,'render_elapsed_seconds':round(time.monotonic()-T,2),'max_rss_kib':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,'samples':64,'reference':'KBS public episode thumbnail; viewing only, not embedded','changes':['sculpted cheek/jaw silhouette','layered eyes and lashes','volumetric curls and bow','pleated striped skirt and pocket seams','articulated arm and separated fingers','furnished room and puppy/bird listener','anticipation and settling'],'limitations':['procedural visual approximation, not identical production character','no speech or phoneme lip sync','single 3-second shot, not an episode','no claim of broadcast-equivalent quality']}
+report={'experiment':'003-reference-study','renderer':s.render.engine,'device':'CPU software OpenGL; see glxinfo.txt','width':768,'height':432,'frames':72 if os.environ.get('STUDY_STILL_ONLY')!='1' else 1,'fps':24,'duration':3 if os.environ.get('STUDY_STILL_ONLY')!='1' else 0,'mode':'animation' if os.environ.get('STUDY_STILL_ONLY')!='1' else 'still','still_elapsed_seconds':still_elapsed,'render_elapsed_seconds':round(time.monotonic()-T,2),'max_rss_kib':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,'hero_samples':64,'animation_samples':8,'reference':'KBS public episode thumbnail; viewing only, not embedded','changes':['sculpted cheek/jaw silhouette','layered eyes and lashes','volumetric curls and bow','pleated striped skirt and pocket seams','articulated arm and separated fingers','furnished room and puppy/bird listener','anticipation and settling'],'limitations':['procedural visual approximation, not identical production character','no speech or phoneme lip sync','single 3-second shot, not an episode','no claim of broadcast-equivalent quality']}
 (out/'report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
