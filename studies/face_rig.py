@@ -42,6 +42,28 @@ for j in range(M):
   eyehole=any(((x-ex)/rx)**2+((z-ez)/rz)**2<1 for ex,ez in eyes)
   mouthhole=(x/.082)**2+((z+.29)/.014)**2<1
   if not eyehole and not mouthhole:faces.append(tuple(ids))
+# Periorbital skin patches: fixed outer seam and moving inner lid margin.
+# These are real skin surfaces in the facial mesh, not scaled eyes or a painted overlay.
+lid_roles={}
+for side,(ex,ez) in zip(['L','R'],eyes):
+ for upper in [1,-1]:
+  start=len(vs);U=40;V=8
+  for j in range(V+1):
+   v=j/V
+   for i in range(U+1):
+    u=-1+2*i/U;x=ex+rx*u;arch=rz*math.sqrt(max(0,1-u*u))
+    outer=ez+upper*(arch+.025);inner=ez+upper*arch;z=(1-v)*outer+v*inner
+    y=-d*math.sqrt(max(.01,1-(x/w)**2-(z/h)**2))-.003
+    closed_z=(1-v)*outer+v*ez
+    cap_y=-.490+.070*(u*u+((closed_z-ez)/rz)**2)
+    blend=math.sin(v*math.pi/2)**.6
+    closed_y=(1-blend)*y+blend*cap_y
+    idx=len(vs);vs.append((x,y,z));lid_roles[idx]=(side,(x,closed_y,closed_z))
+  for j in range(V):
+   for i in range(U):
+    a=start+j*(U+1)+i;b=a+1;cc=b+U+1;dd=a+U+1
+    faces.append((a,dd,cc,b) if upper==1 else (a,b,cc,dd))
+
 me=bpy.data.meshes.new('facial aperture topology');me.from_pydata(vs,[],faces);me.update()
 face=bpy.data.objects.new('deformable facial shell',me);s.collection.objects.link(face);face.parent=head;face.data.materials.append(skin)
 for p in me.polygons:p.use_smooth=True
@@ -54,13 +76,17 @@ for p in me.polygons:
   a*=max(0,-v.y)/d
   c=(.94,.70,.53);r=(.94,.46,.42);col.data[li].color=tuple(c[k]*(1-a)+r[k]*a for k in range(3))+(1,)
 # Surface displacements: lids, lips, jaw and cheek vertices share the facial shell.
-def displacement(p,kind):
+def displacement(p,kind,index=None):
  x,y,z=p;dz=0;dx=0;dy=0
  if kind.startswith('Blink'):
-  ex=-.235 if kind.endswith('L') else .235;ez=-.005
-  r=math.sqrt(((x-ex)/rx)**2+((z-ez)/rz)**2)
-  q=math.exp(-((r-1)/.58)**2)*math.exp(-((x-ex)/.23)**6)
-  dz=-(z-ez)*.985*q;dy=-.060*q
+  side=kind[-1]
+  if index is not None:
+   role=lid_roles.get(index)
+   return role[1] if role and role[0]==side else p
+  # Lash strip follows the same inner lid margin.
+  ex=-.235 if side=='L' else .235;ez=-.005;u=max(-1,min(1,(x-ex)/rx))
+  arch=rz*math.sqrt(max(0,1-u*u));offset=z-(ez+arch)
+  return (x,-.490+.070*u*u,ez+offset)
  elif kind=='JawOpen':
   q=max(0,1-(x/.16)**2)*math.exp(-abs(z+.29)/.095)
   dz=(.042 if z>=-.29 else -.048)*q
@@ -74,11 +100,11 @@ def displacement(p,kind):
 face.shape_key_add(name='Basis');keys={}
 for kind in ['BlinkL','BlinkR','JawOpen','Smile','BrowRaise']:
  k=face.shape_key_add(name=kind);keys[kind]=k
- for i,v in enumerate(vs):k.data[i].co=displacement(v,kind)
+ for i,v in enumerate(vs):k.data[i].co=displacement(v,kind,i)
 # Closed eyelid skin must sit in front of the iris, not pass behind it.
 closure_check={}
 for side,ex in [('L',-.235),('R',.235)]:
- pts=[p.co for p in keys['Blink'+side].data if abs(p.co.x-ex)<.035 and abs(p.co.z+.005)<.035 and p.co.y<-.46]
+ pts=[keys['Blink'+side].data[i].co for i,role in lid_roles.items() if role[0]==side and abs(keys['Blink'+side].data[i].co.x-ex)<.035 and abs(keys['Blink'+side].data[i].co.z+.005)<.035 and keys['Blink'+side].data[i].co.y<-.46]
  closure_check[side]=len(pts)
  assert len(pts)>5,'Closed skin does not cover the iris depth'
 # Pupil geometry remains unchanged during the blink. Skin closes over the eyeballs.
@@ -123,5 +149,5 @@ for f in range(1,37):
  for n,v in [('BlinkL',blink),('BlinkR',blink),('JawOpen',jaw),('Smile',smile),('BrowRaise',smile*.5)]:keys[n].value=v;keys[n].keyframe_insert('value',frame=f)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'deformable-face.blend'))
 s.eevee.taa_render_samples=6;s.render.filepath=str(out/'frame_');bpy.ops.render.render(animation=True)
-report={'experiment':'006-deformable-face','vertices':len(vs),'faces':len(faces),'shape_keys':motion,'closed_eyelid_front_vertices':closure_check,'renderer':s.render.engine,'stills':[x[0] for x in views],'animation_frames':36,'fps':24,'width':576,'height':576,'elapsed_seconds':round(time.monotonic()-T,2),'max_rss_kib':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,'checks':['true eye and mouth surface apertures','eye geometry not scaled for blink','skin and lash deformation share blink control','jaw and smile change facial shell vertices'],'limitations':['new experimental topology; boundary artifacts possible','not a production retopology or original rig','not identical to the reference','silent deformation test, no speech claim']}
+report={'experiment':'006-deformable-face','vertices':len(vs),'eyelid_patch_vertices':len(lid_roles),'faces':len(faces),'shape_keys':motion,'closed_eyelid_front_vertices':closure_check,'renderer':s.render.engine,'stills':[x[0] for x in views],'animation_frames':36,'fps':24,'width':576,'height':576,'elapsed_seconds':round(time.monotonic()-T,2),'max_rss_kib':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,'checks':['true eye and mouth surface apertures','eye geometry not scaled for blink','skin and lash deformation share blink control','jaw and smile change facial shell vertices'],'limitations':['new experimental topology; boundary artifacts possible','not a production retopology or original rig','not identical to the reference','silent deformation test, no speech claim']}
 (out/'report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
