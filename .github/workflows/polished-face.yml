@@ -1,0 +1,84 @@
+name: Polished Character CPU
+on:
+  workflow_dispatch:
+    inputs:
+      render_full:
+        description: Render the 77-frame clip after reviewing the stills
+        type: boolean
+        default: false
+  push:
+    paths:
+      - '.github/workflows/polished-face.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: polished-character-cpu
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 25
+    env:
+      LIBGL_ALWAYS_SOFTWARE: '1'
+      OMP_NUM_THREADS: '4'
+      BLENDER_SYSTEM_DATAFILES: /tmp/blender-source/release/datafiles
+      OCIO: /tmp/blender-source/release/datafiles/colormanagement/config.ocio
+      STILL_ONLY: ${{ github.event_name == 'workflow_dispatch' && inputs.render_full && '0' || '1' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: connected-face-2
+          path: input
+          github-token: ${{ github.token }}
+          run-id: 40164256182
+      - name: Install CPU renderer
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y blender ffmpeg xvfb xauth mesa-utils libgl1-mesa-dri python3-pil
+          git clone --depth 1 --branch v3.0.1 --filter=blob:none --sparse https://github.com/blender/blender.git /tmp/blender-source
+          git -C /tmp/blender-source sparse-checkout set release/datafiles/colormanagement
+      - name: Render representative poses
+        run: |
+          mkdir -p output
+          xvfb-run -a glxinfo -B > output/glxinfo.txt
+          xvfb-run -a -s "-screen 0 1280x720x24" blender --factory-startup --background input/continuous-face.blend -t 4 --python-exit-code 1 --python studies/polished_scene.py > output/render.log 2>&1
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image,ImageStat
+          assert 'llvmpipe' in Path('output/glxinfo.txt').read_text()
+          for name in ['hero.png','blink.png']:
+              p=Path('output')/name
+              im=Image.open(p)
+              assert im.size==(960,540)
+              st=ImageStat.Stat(im.convert('L'))
+              assert st.mean[0]>10 and st.stddev[0]>10
+          PY
+      - name: Encode full clip when requested
+        if: env.STILL_ONLY == '0'
+        run: |
+          ffmpeg -y -framerate 24 -i output/frame_%04d.png -i studies/fixtures/004-voice.wav -c:v libx264 -crf 18 -pix_fmt yuv420p -c:a aac -b:a 128k -movflags +faststart output/polished-korean.mp4
+          ffprobe -v error -show_streams -of json output/polished-korean.mp4 > output/video-check.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image,ImageStat
+          streams=json.loads(Path('output/video-check.json').read_text())['streams']
+          v=next(s for s in streams if s['codec_type']=='video')
+          a=next(s for s in streams if s['codec_type']=='audio')
+          assert int(v['nb_frames'])==77 and v['width']==960 and v['height']==540
+          assert abs(float(v['duration'])-float(a['duration']))<.08
+          frames=list(Path('output').glob('frame_*.png'))
+          assert len(frames)==77
+          for p in frames:
+              st=ImageStat.Stat(Image.open(p).convert('L'))
+              assert st.mean[0]>10 and st.stddev[0]>10
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: polished-character-${{ github.run_number }}
+          path: output
+          retention-days: 14
+
