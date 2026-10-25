@@ -1,0 +1,99 @@
+name: Korean Talking Character CPU
+on:
+  push:
+    paths: ['.github/workflows/talking-cpu.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: talking-cpu
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    env:
+      LIBGL_ALWAYS_SOFTWARE: '1'
+      OMP_NUM_THREADS: '4'
+      BLENDER_SYSTEM_DATAFILES: /tmp/blender-source/release/datafiles
+      OCIO: /tmp/blender-source/release/datafiles/colormanagement/config.ocio
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare CPU renderer and official color data
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends blender ffmpeg xvfb xauth mesa-utils libgl1-mesa-dri python3-pil
+          git clone --depth 1 --branch v3.0.1 --filter=blob:none --sparse https://github.com/blender/blender.git /tmp/blender-source
+          git -C /tmp/blender-source sparse-checkout set release/datafiles/colormanagement
+          mkdir -p output
+          xvfb-run -a glxinfo -B > output/glxinfo.txt
+          grep -Ei 'llvmpipe|softpipe|software rasterizer' output/glxinfo.txt
+      - name: Render real audio-driven mouth cues
+        run: xvfb-run -a -s "-screen 0 1280x720x24" blender --factory-startup -b -t 4 --python-exit-code 1 --python studies/talking.py > output/render.log 2>&1
+      - name: Mux Korean voice and validate picture and sound
+        run: |
+          ffmpeg -hide_banner -loglevel error -framerate 24 -i output/frame_%04d.png -i studies/fixtures/004-voice.wav -c:v libx264 -crf 18 -pix_fmt yuv420p -c:a aac -b:a 128k -movflags +faststart output/korean-talking-B.mp4
+          ffprobe -v error -show_entries stream=codec_type,codec_name,width,height,nb_frames,duration:format=duration -of json output/korean-talking-B.mp4 > output/video-check.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from PIL import Image, ImageStat, ImageChops
+          r=json.loads(Path('output/report.json').read_text())
+          d=json.loads(Path('output/video-check.json').read_text())
+          v=next(x for x in d['streams'] if x['codec_type']=='video')
+          a=next(x for x in d['streams'] if x['codec_type']=='audio')
+          assert v['codec_name']=='h264' and a['codec_name']=='aac'
+          assert int(v['nb_frames'])==r['frames']
+          assert abs(float(v['duration'])-float(a['duration']))<.08
+          frames=sorted(Path('output').glob('frame_*.png'))
+          assert len(frames)==r['frames']
+          assert all(sum(ImageStat.Stat(Image.open(f).convert('RGB')).mean)>30 for f in frames)
+          assert ImageChops.difference(Image.open(frames[0]).convert('RGB'),Image.open(frames[40]).convert('RGB')).getbbox()
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: korean-talking-B-${{ github.run_number }}
+          path: output/
+          retention-days: 14
+  speech_transcript:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install CPU speech recognition checker
+        run: python -m pip install faster-whisper==1.2.0
+      - name: Independently transcribe generated Korean without expected-text prompt
+        run: |
+          mkdir -p output
+          python - <<'PY'
+          from faster_whisper import WhisperModel
+          import json,re,time
+          from pathlib import Path
+          t=time.monotonic()
+          m=WhisperModel('small',device='cpu',compute_type='int8',cpu_threads=4)
+          segments,info=m.transcribe('studies/fixtures/004-voice.wav',language='ko',beam_size=5,condition_on_previous_text=False)
+          segments=list(segments)
+          transcript=''.join(s.text for s in segments).strip()
+          normalize=lambda s:re.sub(r'[^가-힣a-zA-Z0-9]','',s)
+          ref=normalize('안녕! 오늘은 무슨 놀이를 할까?');hyp=normalize(transcript)
+          row=list(range(len(hyp)+1))
+          for i,a in enumerate(ref,1):
+              nr=[i]
+              for j,b in enumerate(hyp,1):nr.append(min(nr[-1]+1,row[j]+1,row[j-1]+(a!=b)))
+              row=nr
+          cer=row[-1]/len(ref)
+          report={'engine':'faster-whisper small CPU int8','expected':'안녕! 오늘은 무슨 놀이를 할까?','transcript':transcript,'normalized_character_error_rate':cer,'elapsed_seconds':round(time.monotonic()-t,2),'machine_check':cer<=.1,'limitations':['ASR can be wrong','not a perceptual acting-quality assessment','not original actor voice']}
+          Path('output/asr-check.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          assert transcript,'Empty independent transcript'
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: korean-speech-transcript-${{ github.run_number }}
+          path: output/
+          retention-days: 14
