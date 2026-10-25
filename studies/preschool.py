@@ -179,16 +179,18 @@ for f in range(1,73):
  tail.rotation_euler.y=.35*math.sin(t*9);tail.keyframe_insert('rotation_euler',frame=f)
  bird.rotation_euler.z=.12*math.sin(t*3);bird.keyframe_insert('rotation_euler',frame=f)
  cam.location=(3.3-.5*u,-7.8+.5*u,3.4-.2*u);cam.keyframe_insert('location',frame=f)
-s.frame_set(1);bpy.context.view_layer.update()
-bpy.ops.wm.save_as_mainfile(filepath=str(out/'study.blend'))
-# Check a frame before spending time on the animation.
-s.render.filepath=str(out/'hero.png');bpy.ops.render.render(write_still=True)
-im=bpy.data.images.load(str((out/'hero.png').resolve()));px=list(im.pixels);rgb=[v for i,v in enumerate(px) if i%4<3]
-check={'mean':sum(rgb)/len(rgb),'range':max(rgb)-min(rgb)};(out/'visual-check.json').write_text(json.dumps(check))
-assert check['mean']>.03 and check['range']>.15,'Blank hero frame'
-still_elapsed=round(time.monotonic()-T,2)
-if os.environ.get('STUDY_STILL_ONLY')!='1':
- s.eevee.taa_render_samples=8
- s.render.filepath=str(out/'frame_');bpy.ops.render.render(animation=True)
-report={'experiment':'003-reference-study','renderer':s.render.engine,'device':'CPU software OpenGL; see glxinfo.txt','width':768,'height':432,'frames':72 if os.environ.get('STUDY_STILL_ONLY')!='1' else 1,'fps':24,'duration':3 if os.environ.get('STUDY_STILL_ONLY')!='1' else 0,'mode':'animation' if os.environ.get('STUDY_STILL_ONLY')!='1' else 'still','still_elapsed_seconds':still_elapsed,'render_elapsed_seconds':round(time.monotonic()-T,2),'max_rss_kib':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,'hero_samples':64,'animation_samples':8,'reference':'KBS public episode thumbnail; viewing only, not embedded','changes':['sculpted cheek/jaw silhouette','layered eyes and lashes','volumetric curls and bow','pleated striped skirt and pocket seams','articulated arm and separated fingers','furnished room and puppy/bird listener','anticipation and settling'],'limitations':['procedural visual approximation, not identical production character','no speech or phoneme lip sync','single 3-second shot, not an episode','no claim of broadcast-equivalent quality']}
-(out/'report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
+if os.environ.get('STUDY_BUILD_ONLY')!='1':
+ s.frame_set(1);bpy.context.view_layer.update()
+ bpy.ops.wm.save_as_mainfile(filepath=str(out/'study.blend'))
+ # Check a frame before spending time on the animation.
+ s.render.filepath=str(out/'hero.png');bpy.ops.render.render(write_still=True)
+ im=bpy.data.images.load(str((out/'hero.png').resolve()));px=list(im.pixels);rgb=[v for i,v in enumerate(px) if i%4<3]
+ check={'mean':sum(rgb)/len(rgb),'range':max(rgb)-min(rgb)};(out/'visual-check.json').write_text(json.dumps(check))
+ assert check['mean']>.03 and check['range']>.15,'Blank hero frame'
+ still_elapsed=round(time.monotonic()-T,2)
+ if os.environ.get('STUDY_STILL_ONLY')!='1':
+  s.eevee.taa_render_samples=8
+  s.render.filepath=str(out/'frame_');bpy.ops.render.render(animation=True)
+ report={'experiment':'003-reference-study','renderer':s.render.engine,'device':'CPU software OpenGL; see glxinfo.txt','width':768,'height':432,'frames':72 if os.environ.get('STUDY_STILL_ONLY')!='1' else 1,'fps':24,'duration':3 if os.environ.get('STUDY_STILL_ONLY')!='1' else 0,'mode':'animation' if os.environ.get('STUDY_STILL_ONLY')!='1' else 'still','still_elapsed_seconds':still_elapsed,'render_elapsed_seconds':round(time.monotonic()-T,2),'max_rss_kib':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,'hero_samples':64,'animation_samples':8,'reference':'KBS public episode thumbnail; viewing only, not embedded','changes':['sculpted cheek/jaw silhouette','layered eyes and lashes','volumetric curls and bow','pleated striped skirt and pocket seams','articulated arm and separated fingers','furnished room and puppy/bird listener','anticipation and settling'],'limitations':['procedural visual approximation, not identical production character','no speech or phoneme lip sync','single 3-second shot, not an episode','no claim of broadcast-equivalent quality']}
+ (out/'report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
+ 
