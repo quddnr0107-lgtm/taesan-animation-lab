@@ -21,12 +21,16 @@ jobs:
       STUDY_STILL_ONLY: ${{ github.event_name == 'push' && '1' || (inputs.still_only && '1' || '0') }}
       LIBGL_ALWAYS_SOFTWARE: '1'
       OMP_NUM_THREADS: '4'
+      OCIO: /tmp/blender-source/release/datafiles/colormanagement/config.ocio
     steps:
       - uses: actions/checkout@v4
       - name: Install Blender and CPU OpenGL
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends blender ffmpeg xvfb xauth mesa-utils libgl1-mesa-dri python3-pil
+          git clone --depth 1 --branch v3.0.1 --filter=blob:none --sparse https://github.com/blender/blender.git /tmp/blender-source
+          git -C /tmp/blender-source sparse-checkout set release/datafiles/colormanagement
+          test -s /tmp/blender-source/release/datafiles/colormanagement/config.ocio
           mkdir -p output
           xvfb-run -a glxinfo -B > output/glxinfo.txt
           grep -Ei 'llvmpipe|softpipe|software rasterizer' output/glxinfo.txt
