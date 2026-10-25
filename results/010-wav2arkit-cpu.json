@@ -1,0 +1,58 @@
+{
+  "status": "cpu-inference-passed",
+  "provider": "CPUExecutionProvider",
+  "load_seconds": 0.4874,
+  "inputs": [
+    {
+      "name": "audio_waveform",
+      "shape": [
+        "s33",
+        "s45"
+      ],
+      "type": "tensor(float)"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "blendshapes",
+      "shape": [
+        1,
+        "CeilToInt(30.0*(IntTrueDiv(s45, 16000)))",
+        52
+      ],
+      "type": "tensor(float)"
+    }
+  ],
+  "korean": {
+    "shape": [
+      1,
+      96,
+      52
+    ],
+    "seconds": 0.2554,
+    "min": 0.00011864304542541504,
+    "max": 0.4858449101448059,
+    "mean": 0.020732661709189415,
+    "time_variation": 0.01703266054391861
+  },
+  "silence": {
+    "shape": [
+      1,
+      96,
+      52
+    ],
+    "seconds": 0.2409,
+    "min": 0.00011488795280456543,
+    "max": 0.0940563976764679,
+    "mean": 0.008947484195232391,
+    "time_variation": 0.000455832778243348
+  },
+  "korean_silence_mae": 0.013899014331400394,
+  "limitations": [
+    "No rendered avatar quality claim",
+    "No Korean phoneme accuracy score",
+    "52 outputs require a corresponding authored facial rig",
+    "Model card speed/size claims are not assumed true"
+  ],
+  "max_rss_kib": 570816
+}

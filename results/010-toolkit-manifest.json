@@ -1,0 +1,466 @@
+{
+  "scope": "13 upstream source/model bundles from the capability map; not the entire internet, all model weights, or all asset libraries",
+  "downloaded": 13,
+  "failed": 0,
+  "elapsed_seconds": 7.78,
+  "sources": [
+    {
+      "id": "studio-pose-tools",
+      "kind": "gitea",
+      "repo": "studio/blender-studio-tools",
+      "purpose": "Pose Shape Keys, rigging tools and workflow source",
+      "files": [
+        {
+          "path": "toolkit/studio-pose-tools/source.tar.gz",
+          "bytes": 2476293,
+          "sha256": "e2037c0b1f88a883d2f0565fc974e00e473ab8df2c85ff26edde0d131f5ef2e9",
+          "url": "https://projects.blender.org/api/v1/repos/studio/blender-studio-tools/archive/c511debdb1ad5f22f9d3ac828653d7ab15900424.tar.gz"
+        }
+      ],
+      "revision": "c511debdb1ad5f22f9d3ac828653d7ab15900424",
+      "members": 772,
+      "license_files": [
+        "blender-studio-tools/LICENSE",
+        "blender-studio-tools/scripts-blender/addons/anim_cupboard/LICENSE",
+        "blender-studio-tools/scripts-blender/addons/asset_pipeline/LICENSE",
+        "blender-studio-tools/scripts-blender/addons/blender_kitsu/LICENSE",
+        "blender-studio-tools/scripts-blender/addons/blender_log/LICENSE",
+        "blender-studio-tools/scripts-blender/addons/brushstroke_tools/LICENSE",
+        "blender-studio-tools/scripts-blender/addons/contactsheet/LICENSE",
+        "blender-studio-tools/scripts-blender/addons/easy_weight/LICENSE",
+        "blender-studio-tools/scripts-blender/addons/geonode_shapekeys/LICENSE",
+        "blender-studio-tools/scripts-blender/addons/lattice_magic/LICENSE",
+        "blender-studio-tools/scripts-blender/addons/lighting_overrider/LICENSE",
+        "blender-studio-tools/scripts-blender/addons/pose_shape_keys/LICENSE"
+      ],
+      "readme_files": [
+        "blender-studio-tools/README.md",
+        "blender-studio-tools/application-templates/README.md",
+        "blender-studio-tools/application-templates/blender-media-viewer/README.md",
+        "blender-studio-tools/docs/README.md",
+        "blender-studio-tools/docs/media/README.md",
+        "blender-studio-tools/scripts-blender/README.md",
+        "blender-studio-tools/scripts-blender/addons/anim_cupboard/README.md",
+        "blender-studio-tools/scripts-blender/addons/asset_pipeline/README.md",
+        "blender-studio-tools/scripts-blender/addons/blender_kitsu/README.md",
+        "blender-studio-tools/scripts-blender/addons/blender_kitsu/shot_builder/templates/README.md",
+        "blender-studio-tools/scripts-blender/addons/blender_log/README.md",
+        "blender-studio-tools/scripts-blender/addons/brushstroke_tools/README.md",
+        "blender-studio-tools/scripts-blender/addons/contactsheet/README.md",
+        "blender-studio-tools/scripts-blender/addons/easy_weight/README.md",
+        "blender-studio-tools/scripts-blender/addons/geonode_shapekeys/README.md",
+        "blender-studio-tools/scripts-blender/addons/lattice_magic/README.md",
+        "blender-studio-tools/scripts-blender/addons/lighting_overrider/README.md",
+        "blender-studio-tools/scripts-blender/addons/pose_shape_keys/README.md",
+        "blender-studio-tools/scripts-blender/tests/ReadMe.md",
+        "blender-studio-tools/scripts/bbatch/README.md",
+        "blender-studio-tools/scripts/freesound-credits/README.md",
+        "blender-studio-tools/scripts/kitsu-uploader/README.md",
+        "blender-studio-tools/scripts/pipeline-release/README.md",
+        "blender-studio-tools/scripts/project-tools/README.md",
+        "blender-studio-tools/scripts/remap/README.md",
+        "blender-studio-tools/scripts/resync_blends/README.md"
+      ],
+      "dependency_note": "Source snapshot only: submodules, LFS payloads, pretrained weights and runtime dependencies are not implied.",
+      "status": "downloaded",
+      "runtime_status": "not-installed-or-executed"
+    },
+    {
+      "id": "cloudrig",
+      "kind": "gitea",
+      "repo": "Mets/CloudRig",
+      "purpose": "Generated body and facial control rigs",
+      "files": [
+        {
+          "path": "toolkit/cloudrig/source.tar.gz",
+          "bytes": 14173892,
+          "sha256": "310a829ab17a463df4895c9b624aeb1ed426697023a9c7506bcdc8faf989c608",
+          "url": "https://projects.blender.org/api/v1/repos/Mets/CloudRig/archive/05b6ddd98c5dc95cd1053443e49bdce418857bf6.tar.gz"
+        }
+      ],
+      "revision": "05b6ddd98c5dc95cd1053443e49bdce418857bf6",
+      "members": 222,
+      "license_files": [
+        "cloudrig/CloudRig/LICENSE"
+      ],
+      "readme_files": [
+        "cloudrig/README.md",
+        "cloudrig/tests/ReadMe.md"
+      ],
+      "dependency_note": "Source snapshot only: submodules, LFS payloads, pretrained weights and runtime dependencies are not implied.",
+      "status": "downloaded",
+      "runtime_status": "not-installed-or-executed"
+    },
+    {
+      "id": "corrective-smooth",
+      "kind": "github-files",
+      "repo": "blender/blender",
+      "paths": [
+        "source/blender/modifiers/intern/MOD_correctivesmooth.cc",
+        "COPYING",
+        "README.md"
+      ],
+      "purpose": "Built-in modifier implementation, not a standalone plugin",
+      "files": [
+        {
+          "path": "toolkit/corrective-smooth/source/blender/modifiers/intern/MOD_correctivesmooth.cc",
+          "bytes": 29570,
+          "sha256": "afb2ce49ac7a6975e4678011e48be25178524e762307349b7b3b609028119b8f",
+          "url": "https://raw.githubusercontent.com/blender/blender/3d36ff17fadd713e45eadbe6bc044f1569732989/source/blender/modifiers/intern/MOD_correctivesmooth.cc"
+        },
+        {
+          "path": "toolkit/corrective-smooth/COPYING",
+          "bytes": 302,
+          "sha256": "19e6f4b541772f9d7b98a52bdbca3ebd5ef9e404956a9a6de68bfc3c1a178387",
+          "url": "https://raw.githubusercontent.com/blender/blender/3d36ff17fadd713e45eadbe6bc044f1569732989/COPYING"
+        },
+        {
+          "path": "toolkit/corrective-smooth/README.md",
+          "bytes": 1234,
+          "sha256": "1bbb333e5196ba3d5cdc42830e5f1db6b77c311da96d4ff4d9a6f8143d9821e1",
+          "url": "https://raw.githubusercontent.com/blender/blender/3d36ff17fadd713e45eadbe6bc044f1569732989/README.md"
+        }
+      ],
+      "revision": "3d36ff17fadd713e45eadbe6bc044f1569732989",
+      "license": "NOASSERTION",
+      "note": "Selected built-in source files, not a full Blender distribution.",
+      "status": "downloaded",
+      "runtime_status": "not-installed-or-executed"
+    },
+    {
+      "id": "rokoko",
+      "kind": "github",
+      "repo": "Rokoko/rokoko-studio-live-blender",
+      "purpose": "Animation retargeting",
+      "files": [
+        {
+          "path": "toolkit/rokoko/source.tar.gz",
+          "bytes": 79453,
+          "sha256": "c97ab6a38862cdf4be18d8e368f9468a3bdf9baf8aa95c8b8736aa18536315d4",
+          "url": "https://codeload.github.com/Rokoko/rokoko-studio-live-blender/tar.gz/b031e5a001b3d87e62359d18159c4e4ab479c732"
+        }
+      ],
+      "revision": "b031e5a001b3d87e62359d18159c4e4ab479c732",
+      "license": "LGPL-3.0",
+      "members": 54,
+      "license_files": [
+        "rokoko-studio-live-blender-b031e5a001b3d87e62359d18159c4e4ab479c732/LICENSE.md"
+      ],
+      "readme_files": [
+        "rokoko-studio-live-blender-b031e5a001b3d87e62359d18159c4e4ab479c732/README.md"
+      ],
+      "dependency_note": "Source snapshot only: submodules, LFS payloads, pretrained weights and runtime dependencies are not implied.",
+      "status": "downloaded",
+      "runtime_status": "not-installed-or-executed"
+    },
+    {
+      "id": "mediapipe",
+      "kind": "github",
+      "repo": "google-ai-edge/mediapipe",
+      "purpose": "Face and pose capture source",
+      "files": [
+        {
+          "path": "toolkit/mediapipe/source.tar.gz",
+          "bytes": 43398782,
+          "sha256": "42fcda6992e5aaca8b50416538354390a6f090f80d3232a8a1c6c4ae827a6592",
+          "url": "https://codeload.github.com/google-ai-edge/mediapipe/tar.gz/37073b9423fb9d1370edc38e9e15ef1b0de2236f"
+        }
+      ],
+      "revision": "37073b9423fb9d1370edc38e9e15ef1b0de2236f",
+      "license": "Apache-2.0",
+      "members": 4965,
+      "license_files": [
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/LICENSE"
+      ],
+      "readme_files": [
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/docs/MediaPipeTasksDocGen/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/calculators/tflite/testdata/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/docs/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/examples/android/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/examples/coral/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/examples/desktop/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/examples/desktop/autoflip/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/examples/desktop/media_sequence/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/examples/desktop/youtube8m/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/examples/ios/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/framework/api2/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/framework/api3/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/framework/profiler/reporter/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/modules/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/modules/face_detection/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/modules/face_geometry/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/modules/face_landmark/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/modules/hand_landmark/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/modules/holistic_landmark/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/modules/iris_landmark/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/modules/objectron/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/modules/palm_detection/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/modules/pose_detection/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/modules/pose_landmark/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/modules/selfie_segmentation/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/tasks/python/benchmark/vision/image_classifier/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/tasks/web/audio/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/tasks/web/decision/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/tasks/web/genai/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/tasks/web/retrieval/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/tasks/web/text/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/tasks/web/vision/README.md",
+        "mediapipe-37073b9423fb9d1370edc38e9e15ef1b0de2236f/mediapipe/util/sequence/README.md"
+      ],
+      "dependency_note": "Source snapshot only: submodules, LFS payloads, pretrained weights and runtime dependencies are not implied.",
+      "status": "downloaded",
+      "runtime_status": "not-installed-or-executed"
+    },
+    {
+      "id": "lam-a2e",
+      "kind": "github",
+      "repo": "aigc3d/LAM_Audio2Expression",
+      "purpose": "Audio-driven facial expressions; upstream CUDA route",
+      "files": [
+        {
+          "path": "toolkit/lam-a2e/source.tar.gz",
+          "bytes": 4725084,
+          "sha256": "2ae24ed931a449a0fda33dd93af7d01007231ba51b77404b50da78931e8d72ce",
+          "url": "https://codeload.github.com/aigc3d/LAM_Audio2Expression/tar.gz/02a703c3ea7d8e360eb43098eca85ee98a083529"
+        }
+      ],
+      "revision": "02a703c3ea7d8e360eb43098eca85ee98a083529",
+      "license": "Apache-2.0",
+      "members": 52,
+      "license_files": [
+        "LAM_Audio2Expression-02a703c3ea7d8e360eb43098eca85ee98a083529/LICENSE"
+      ],
+      "readme_files": [
+        "LAM_Audio2Expression-02a703c3ea7d8e360eb43098eca85ee98a083529/README.md"
+      ],
+      "dependency_note": "Source snapshot only: submodules, LFS payloads, pretrained weights and runtime dependencies are not implied.",
+      "status": "downloaded",
+      "runtime_status": "not-installed-or-executed"
+    },
+    {
+      "id": "wav2arkit-cpu",
+      "kind": "huggingface",
+      "repo": "myned-ai/wav2arkit_cpu",
+      "purpose": "Third-party ONNX CPU audio-to-52-blendshape candidate",
+      "files": [
+        {
+          "path": "toolkit/wav2arkit-cpu/.gitattributes",
+          "bytes": 1579,
+          "sha256": "a9cfc4d4d4a27be5607702102ab24e2968fd66e744be72d4e13a30f1b4b88155",
+          "url": "https://huggingface.co/myned-ai/wav2arkit_cpu/resolve/48b7d27a147d4dfcce4c8225b11209ce4cd76e05/.gitattributes"
+        },
+        {
+          "path": "toolkit/wav2arkit-cpu/README.md",
+          "bytes": 5058,
+          "sha256": "43e39dab820a9e42242dfb4923ebe83902fc441465667d2ec598bf4b9c666ccd",
+          "url": "https://huggingface.co/myned-ai/wav2arkit_cpu/resolve/48b7d27a147d4dfcce4c8225b11209ce4cd76e05/README.md"
+        },
+        {
+          "path": "toolkit/wav2arkit-cpu/arch_diagram.png",
+          "bytes": 42779,
+          "sha256": "9cbdd48237a722827861dd810ef22f3b4e8bacd7d8e7d7a845f371dfee240ea3",
+          "url": "https://huggingface.co/myned-ai/wav2arkit_cpu/resolve/48b7d27a147d4dfcce4c8225b11209ce4cd76e05/arch_diagram.png"
+        },
+        {
+          "path": "toolkit/wav2arkit-cpu/config.json",
+          "bytes": 1985,
+          "sha256": "281cdabf83258d3bbb4954452e55e9c68abe579e130de107d2b16b10a6320151",
+          "url": "https://huggingface.co/myned-ai/wav2arkit_cpu/resolve/48b7d27a147d4dfcce4c8225b11209ce4cd76e05/config.json"
+        },
+        {
+          "path": "toolkit/wav2arkit-cpu/wav2arkit_cpu.onnx",
+          "bytes": 1862753,
+          "sha256": "cdecbfad3915dd20b2f0718942d0b8894b2ee11edcc5a9a9da45d29a46af2ed9",
+          "url": "https://huggingface.co/myned-ai/wav2arkit_cpu/resolve/48b7d27a147d4dfcce4c8225b11209ce4cd76e05/wav2arkit_cpu.onnx"
+        },
+        {
+          "path": "toolkit/wav2arkit-cpu/wav2arkit_cpu.onnx.data",
+          "bytes": 402063360,
+          "sha256": "c0f0364673c6e50be126b193e2b56809c16ac6bee4805aea9b8251ce53429bf8",
+          "url": "https://huggingface.co/myned-ai/wav2arkit_cpu/resolve/48b7d27a147d4dfcce4c8225b11209ce4cd76e05/wav2arkit_cpu.onnx.data"
+        }
+      ],
+      "revision": "48b7d27a147d4dfcce4c8225b11209ce4cd76e05",
+      "license": "apache-2.0",
+      "status": "downloaded",
+      "runtime_status": "not-installed-or-executed"
+    },
+    {
+      "id": "audio2face-sdk",
+      "kind": "github",
+      "repo": "NVIDIA/Audio2Face-3D-SDK",
+      "purpose": "GPU audio-driven facial animation SDK",
+      "files": [
+        {
+          "path": "toolkit/audio2face-sdk/source.tar.gz",
+          "bytes": 457874,
+          "sha256": "bd33a3e20acfc10d614c61b1f0962542357565855b813fdd677c52c9aad2f764",
+          "url": "https://codeload.github.com/NVIDIA/Audio2Face-3D-SDK/tar.gz/1ca0f02535ed774f5dbcd724a31cd486368dc783"
+        }
+      ],
+      "revision": "1ca0f02535ed774f5dbcd724a31cd486368dc783",
+      "license": "MIT",
+      "members": 386,
+      "license_files": [
+        "Audio2Face-3D-SDK-1ca0f02535ed774f5dbcd724a31cd486368dc783/LICENSE.txt"
+      ],
+      "readme_files": [
+        "Audio2Face-3D-SDK-1ca0f02535ed774f5dbcd724a31cd486368dc783/README.md",
+        "Audio2Face-3D-SDK-1ca0f02535ed774f5dbcd724a31cd486368dc783/audio2emotion-sdk/source/samples/README.md",
+        "Audio2Face-3D-SDK-1ca0f02535ed774f5dbcd724a31cd486368dc783/audio2face-sdk/source/samples/README.md",
+        "Audio2Face-3D-SDK-1ca0f02535ed774f5dbcd724a31cd486368dc783/docs/README.md"
+      ],
+      "dependency_note": "Source snapshot only: submodules, LFS payloads, pretrained weights and runtime dependencies are not implied.",
+      "status": "downloaded",
+      "runtime_status": "not-installed-or-executed"
+    },
+    {
+      "id": "unirig",
+      "kind": "github",
+      "repo": "VAST-AI-Research/UniRig",
+      "purpose": "GPU skeleton and skin-weight prediction",
+      "files": [
+        {
+          "path": "toolkit/unirig/source.tar.gz",
+          "bytes": 22829173,
+          "sha256": "ebdda5907b520b6ccfa0524f5050c7141475d203289052e9c39024fae039c1a1",
+          "url": "https://codeload.github.com/VAST-AI-Research/UniRig/tar.gz/6793c6640ff01c8fb389f3993434124bb43d2933"
+        }
+      ],
+      "revision": "6793c6640ff01c8fb389f3993434124bb43d2933",
+      "license": "MIT",
+      "members": 141,
+      "license_files": [
+        "UniRig-6793c6640ff01c8fb389f3993434124bb43d2933/LICENSE",
+        "UniRig-6793c6640ff01c8fb389f3993434124bb43d2933/src/model/michelangelo/LICENSE",
+        "UniRig-6793c6640ff01c8fb389f3993434124bb43d2933/src/model/pointcept/LICENSE"
+      ],
+      "readme_files": [
+        "UniRig-6793c6640ff01c8fb389f3993434124bb43d2933/README.md",
+        "UniRig-6793c6640ff01c8fb389f3993434124bb43d2933/src/model/pointcept/README.md"
+      ],
+      "dependency_note": "Source snapshot only: submodules, LFS payloads, pretrained weights and runtime dependencies are not implied.",
+      "status": "downloaded",
+      "runtime_status": "not-installed-or-executed"
+    },
+    {
+      "id": "trellis2",
+      "kind": "github",
+      "repo": "microsoft/TRELLIS.2",
+      "purpose": "GPU image-to-3D generation",
+      "files": [
+        {
+          "path": "toolkit/trellis2/source.tar.gz",
+          "bytes": 18098886,
+          "sha256": "65729b2e0d6a96b429379e4cf04c67be38880fcca57e4673e94f300854e75389",
+          "url": "https://codeload.github.com/microsoft/TRELLIS.2/tar.gz/75fbf0183001ed9876c8dbb35de6b68552ee08bd"
+        }
+      ],
+      "revision": "75fbf0183001ed9876c8dbb35de6b68552ee08bd",
+      "license": "MIT",
+      "members": 271,
+      "license_files": [
+        "TRELLIS.2-75fbf0183001ed9876c8dbb35de6b68552ee08bd/LICENSE",
+        "TRELLIS.2-75fbf0183001ed9876c8dbb35de6b68552ee08bd/assets/hdri/license.txt"
+      ],
+      "readme_files": [
+        "TRELLIS.2-75fbf0183001ed9876c8dbb35de6b68552ee08bd/README.md",
+        "TRELLIS.2-75fbf0183001ed9876c8dbb35de6b68552ee08bd/assets/example_texturing/readme",
+        "TRELLIS.2-75fbf0183001ed9876c8dbb35de6b68552ee08bd/data_toolkit/README.md",
+        "TRELLIS.2-75fbf0183001ed9876c8dbb35de6b68552ee08bd/o-voxel/README.md"
+      ],
+      "dependency_note": "Source snapshot only: submodules, LFS payloads, pretrained weights and runtime dependencies are not implied.",
+      "status": "downloaded",
+      "runtime_status": "not-installed-or-executed"
+    },
+    {
+      "id": "wan22",
+      "kind": "github",
+      "repo": "Wan-Video/Wan2.2",
+      "purpose": "GPU character animation and video generation",
+      "files": [
+        {
+          "path": "toolkit/wan22/source.tar.gz",
+          "bytes": 8478634,
+          "sha256": "53f34e7c29303b978470a2e022cbb621cfa5e020412688d4beb5f731d39b4513",
+          "url": "https://codeload.github.com/Wan-Video/Wan2.2/tar.gz/1ea34ff48f87168174e12956e200b1d908b1c5ff"
+        }
+      ],
+      "revision": "1ea34ff48f87168174e12956e200b1d908b1c5ff",
+      "license": "Apache-2.0",
+      "members": 87,
+      "license_files": [
+        "Wan2.2-1ea34ff48f87168174e12956e200b1d908b1c5ff/LICENSE.txt"
+      ],
+      "readme_files": [
+        "Wan2.2-1ea34ff48f87168174e12956e200b1d908b1c5ff/README.md",
+        "Wan2.2-1ea34ff48f87168174e12956e200b1d908b1c5ff/tests/README.md"
+      ],
+      "dependency_note": "Source snapshot only: submodules, LFS payloads, pretrained weights and runtime dependencies are not implied.",
+      "status": "downloaded",
+      "runtime_status": "not-installed-or-executed"
+    },
+    {
+      "id": "comfyui",
+      "kind": "github",
+      "repo": "Comfy-Org/ComfyUI",
+      "purpose": "Graph-based generation workflow engine",
+      "files": [
+        {
+          "path": "toolkit/comfyui/source.tar.gz",
+          "bytes": 12827193,
+          "sha256": "78ef9a9a068fc659ddcc79038b2e06854e6fbfaeb9c328d7dbcacd3d3c9c4361",
+          "url": "https://codeload.github.com/Comfy-Org/ComfyUI/tar.gz/19ae172bff6c9e4c738e7f2e00fe087f5b5b46ab"
+        }
+      ],
+      "revision": "19ae172bff6c9e4c738e7f2e00fe087f5b5b46ab",
+      "license": "GPL-3.0",
+      "members": 1326,
+      "license_files": [
+        "ComfyUI-19ae172bff6c9e4c738e7f2e00fe087f5b5b46ab/LICENSE"
+      ],
+      "readme_files": [
+        "ComfyUI-19ae172bff6c9e4c738e7f2e00fe087f5b5b46ab/.ci/windows_amd_base_files/README_VERY_IMPORTANT.txt",
+        "ComfyUI-19ae172bff6c9e4c738e7f2e00fe087f5b5b46ab/.ci/windows_nvidia_base_files/README_VERY_IMPORTANT.txt",
+        "ComfyUI-19ae172bff6c9e4c738e7f2e00fe087f5b5b46ab/README.md",
+        "ComfyUI-19ae172bff6c9e4c738e7f2e00fe087f5b5b46ab/alembic_db/README.md",
+        "ComfyUI-19ae172bff6c9e4c738e7f2e00fe087f5b5b46ab/api_server/routes/internal/README.md",
+        "ComfyUI-19ae172bff6c9e4c738e7f2e00fe087f5b5b46ab/app/assets/docs/README.md",
+        "ComfyUI-19ae172bff6c9e4c738e7f2e00fe087f5b5b46ab/blueprints/.glsl/README.md",
+        "ComfyUI-19ae172bff6c9e4c738e7f2e00fe087f5b5b46ab/comfy/comfy_types/README.md",
+        "ComfyUI-19ae172bff6c9e4c738e7f2e00fe087f5b5b46ab/tests-unit/README.md",
+        "ComfyUI-19ae172bff6c9e4c738e7f2e00fe087f5b5b46ab/tests/README.md"
+      ],
+      "dependency_note": "Source snapshot only: submodules, LFS payloads, pretrained weights and runtime dependencies are not implied.",
+      "status": "downloaded",
+      "runtime_status": "not-installed-or-executed"
+    },
+    {
+      "id": "polyhaven-api",
+      "kind": "github",
+      "repo": "Poly-Haven/Public-API",
+      "purpose": "Official asset API integration source; not all hosted assets",
+      "files": [
+        {
+          "path": "toolkit/polyhaven-api/source.tar.gz",
+          "bytes": 303427,
+          "sha256": "e947ab3fd68fe31cc54718d16eb93efa9bc4ee73d20865d299f2cd8ebb66af57",
+          "url": "https://codeload.github.com/Poly-Haven/Public-API/tar.gz/2fd1796dc3506dfa8269439aac8e6f5c65876bd1"
+        }
+      ],
+      "revision": "2fd1796dc3506dfa8269439aac8e6f5c65876bd1",
+      "license": "AGPL-3.0",
+      "members": 93,
+      "license_files": [
+        "Public-API-2fd1796dc3506dfa8269439aac8e6f5c65876bd1/LICENSE"
+      ],
+      "readme_files": [
+        "Public-API-2fd1796dc3506dfa8269439aac8e6f5c65876bd1/README.md"
+      ],
+      "dependency_note": "Source snapshot only: submodules, LFS payloads, pretrained weights and runtime dependencies are not implied.",
+      "status": "downloaded",
+      "runtime_status": "not-installed-or-executed"
+    }
+  ]
+}

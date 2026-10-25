@@ -1,0 +1,192 @@
+[
+  {
+    "id": "studio-pose-tools",
+    "revision": "c511debdb1ad5f22f9d3ac828653d7ab15900424",
+    "license": null,
+    "files": [
+      {
+        "path": "studio-pose-tools/source.tar.gz",
+        "present": true,
+        "sha256_matches": true
+      }
+    ]
+  },
+  {
+    "id": "cloudrig",
+    "revision": "05b6ddd98c5dc95cd1053443e49bdce418857bf6",
+    "license": null,
+    "files": [
+      {
+        "path": "cloudrig/source.tar.gz",
+        "present": true,
+        "sha256_matches": true
+      }
+    ]
+  },
+  {
+    "id": "corrective-smooth",
+    "revision": "3d36ff17fadd713e45eadbe6bc044f1569732989",
+    "license": "NOASSERTION",
+    "files": [
+      {
+        "path": "corrective-smooth/source/blender/modifiers/intern/MOD_correctivesmooth.cc",
+        "present": true,
+        "sha256_matches": true
+      },
+      {
+        "path": "corrective-smooth/COPYING",
+        "present": true,
+        "sha256_matches": true
+      },
+      {
+        "path": "corrective-smooth/README.md",
+        "present": true,
+        "sha256_matches": true
+      }
+    ]
+  },
+  {
+    "id": "rokoko",
+    "revision": "b031e5a001b3d87e62359d18159c4e4ab479c732",
+    "license": "LGPL-3.0",
+    "files": [
+      {
+        "path": "rokoko/source.tar.gz",
+        "present": true,
+        "sha256_matches": true
+      }
+    ]
+  },
+  {
+    "id": "mediapipe",
+    "revision": "37073b9423fb9d1370edc38e9e15ef1b0de2236f",
+    "license": "Apache-2.0",
+    "files": [
+      {
+        "path": "mediapipe/source.tar.gz",
+        "present": true,
+        "sha256_matches": true
+      }
+    ]
+  },
+  {
+    "id": "lam-a2e",
+    "revision": "02a703c3ea7d8e360eb43098eca85ee98a083529",
+    "license": "Apache-2.0",
+    "files": [
+      {
+        "path": "lam-a2e/source.tar.gz",
+        "present": true,
+        "sha256_matches": true
+      }
+    ]
+  },
+  {
+    "id": "wav2arkit-cpu",
+    "revision": "48b7d27a147d4dfcce4c8225b11209ce4cd76e05",
+    "license": "apache-2.0",
+    "files": [
+      {
+        "path": "wav2arkit-cpu/.gitattributes",
+        "present": false
+      },
+      {
+        "path": "wav2arkit-cpu/README.md",
+        "present": true,
+        "sha256_matches": true
+      },
+      {
+        "path": "wav2arkit-cpu/arch_diagram.png",
+        "present": true,
+        "sha256_matches": true
+      },
+      {
+        "path": "wav2arkit-cpu/config.json",
+        "present": true,
+        "sha256_matches": true
+      },
+      {
+        "path": "wav2arkit-cpu/wav2arkit_cpu.onnx",
+        "present": true,
+        "sha256_matches": true
+      },
+      {
+        "path": "wav2arkit-cpu/wav2arkit_cpu.onnx.data",
+        "present": true,
+        "sha256_matches": true
+      }
+    ]
+  },
+  {
+    "id": "audio2face-sdk",
+    "revision": "1ca0f02535ed774f5dbcd724a31cd486368dc783",
+    "license": "MIT",
+    "files": [
+      {
+        "path": "audio2face-sdk/source.tar.gz",
+        "present": true,
+        "sha256_matches": true
+      }
+    ]
+  },
+  {
+    "id": "unirig",
+    "revision": "6793c6640ff01c8fb389f3993434124bb43d2933",
+    "license": "MIT",
+    "files": [
+      {
+        "path": "unirig/source.tar.gz",
+        "present": true,
+        "sha256_matches": true
+      }
+    ]
+  },
+  {
+    "id": "trellis2",
+    "revision": "75fbf0183001ed9876c8dbb35de6b68552ee08bd",
+    "license": "MIT",
+    "files": [
+      {
+        "path": "trellis2/source.tar.gz",
+        "present": true,
+        "sha256_matches": true
+      }
+    ]
+  },
+  {
+    "id": "wan22",
+    "revision": "1ea34ff48f87168174e12956e200b1d908b1c5ff",
+    "license": "Apache-2.0",
+    "files": [
+      {
+        "path": "wan22/source.tar.gz",
+        "present": true,
+        "sha256_matches": true
+      }
+    ]
+  },
+  {
+    "id": "comfyui",
+    "revision": "19ae172bff6c9e4c738e7f2e00fe087f5b5b46ab",
+    "license": "GPL-3.0",
+    "files": [
+      {
+        "path": "comfyui/source.tar.gz",
+        "present": true,
+        "sha256_matches": true
+      }
+    ]
+  },
+  {
+    "id": "polyhaven-api",
+    "revision": "2fd1796dc3506dfa8269439aac8e6f5c65876bd1",
+    "license": "AGPL-3.0",
+    "files": [
+      {
+        "path": "polyhaven-api/source.tar.gz",
+        "present": true,
+        "sha256_matches": true
+      }
+    ]
+  }
+]
