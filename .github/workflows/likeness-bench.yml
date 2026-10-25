@@ -1,0 +1,69 @@
+name: Likeness and Speech CPU Bench
+on:
+  push:
+    paths: ['.github/workflows/likeness-bench.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: likeness-bench
+  cancel-in-progress: false
+jobs:
+  face:
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [A, B, C]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    env:
+      FIT_VARIANT: ${{ matrix.variant }}
+      LIBGL_ALWAYS_SOFTWARE: '1'
+      OMP_NUM_THREADS: '4'
+      BLENDER_SYSTEM_DATAFILES: /tmp/blender-source/release/datafiles
+      OCIO: /tmp/blender-source/release/datafiles/colormanagement/config.ocio
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install verified CPU renderer
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends blender xvfb xauth mesa-utils libgl1-mesa-dri
+          git clone --depth 1 --branch v3.0.1 --filter=blob:none --sparse https://github.com/blender/blender.git /tmp/blender-source
+          git -C /tmp/blender-source sparse-checkout set release/datafiles/colormanagement
+          mkdir -p output
+          xvfb-run -a glxinfo -B > output/glxinfo.txt
+          grep -Ei 'llvmpipe|softpipe|software rasterizer' output/glxinfo.txt
+      - name: Render controlled face and hair variant
+        run: xvfb-run -a -s "-screen 0 1280x720x24" blender --factory-startup -b -t 4 --python-exit-code 1 --python studies/likeness.py > output/render.log 2>&1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: likeness-${{ matrix.variant }}-${{ github.run_number }}
+          path: output/
+          retention-days: 14
+  speech:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    env:
+      OMP_NUM_THREADS: '4'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Prepare official archived ONNX speech example
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg libsndfile1
+          git clone --depth 1 https://github.com/supertone-oss-archive/supertonic.git /tmp/supertonic
+          python -m pip install -r /tmp/supertonic/py/requirements.txt huggingface_hub==0.36.0
+          mkdir -p output
+          python -m pip freeze > output/dependencies.txt
+      - name: Synthesize Korean and calculate phonetic mouth cues on CPU
+        run: python studies/speech_cpu.py > output/speech.log 2>&1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: speech-cpu-${{ github.run_number }}
+          path: output/
+          retention-days: 14
