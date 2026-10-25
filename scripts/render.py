@@ -8,13 +8,17 @@ intent='surprise' if any(x in prompt for x in ['놀','깜짝']) else 'look' if a
 matched=intent!='wave' or any(x in prompt for x in ['인사','손','흔들'])
 bpy.ops.object.select_all(action='SELECT'); bpy.ops.object.delete(use_global=False)
 s=bpy.context.scene
-s.render.engine='CYCLES'; s.cycles.device='CPU'; s.cycles.samples=8
-s.cycles.use_denoising=True
-s.render.resolution_x=640; s.render.resolution_y=360; s.render.resolution_percentage=100
+s.render.engine='CYCLES'; s.cycles.device='CPU'; s.cycles.samples=2
+s.cycles.use_denoising=False
+s.render.use_compositing=False
+s.render.use_sequencer=False
+s.render.resolution_x=320; s.render.resolution_y=180; s.render.resolution_percentage=100
 s.render.fps=16; s.frame_start=1; s.frame_end=96
-s.world.color=(.3,.3,.3)
+s.world.use_nodes=True
+s.world.node_tree.nodes['Background'].inputs['Color'].default_value=(.5,.6,.8,1)
+s.world.node_tree.nodes['Background'].inputs['Strength'].default_value=.8
 def mat(name,color):
- m=bpy.data.materials.new(name); m.diffuse_color=(*color,1); return m
+ m=bpy.data.materials.new(name); m.diffuse_color=(*color,1); m.use_nodes=True; m.node_tree.nodes['Principled BSDF'].inputs['Base Color'].default_value=(*color,1); return m
 skin=mat('warm peach',(.92,.58,.36)); blue=mat('teal outfit',(.035,.46,.51)); dark=mat('espresso',(.055,.028,.025)); white=mat('cream',(.96,.94,.85)); yellow=mat('sunshine',(.95,.65,.12)); floor=mat('coral',(.61,.28,.22))
 def sphere(name,pos,scale,material,parent=None):
  bpy.ops.mesh.primitive_uv_sphere_add(segments=24,ring_count=16,location=pos)
@@ -56,6 +60,8 @@ for loc,power,size in [((2,-4,6),650,5),((-4,-1,3),300,4)]:
  l.rotation_euler=(Vector((0,0,1.2))-l.location).to_track_quat('-Z','Y').to_euler()
 bpy.ops.object.camera_add(location=(3,-7,3.0)); cam=bpy.context.object; s.camera=cam
 cam.data.lens=48
+target=pivot('camera target',(0,0,1.35))
+track=cam.constraints.new('TRACK_TO'); track.target=target; track.track_axis='TRACK_NEGATIVE_Z'; track.up_axis='UP_Y'
 for f in range(1,97):
  t=(f-1)/16
  root.location.z=.018*math.sin(t*3)
@@ -78,6 +84,17 @@ for fc in cam.animation_data.action.fcurves:
  for k in fc.keyframe_points:k.interpolation='CONSTANT'
 s.render.image_settings.file_format='PNG'; s.render.filepath=str(out/'frame_')
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'scene.blend'))
+s.frame_set(1)
+bpy.context.view_layer.update()
+(out/'debug.json').write_text(json.dumps({'camera_position':list(cam.matrix_world.translation),'camera_forward':list(cam.matrix_world.to_quaternion() @ Vector((0,0,-1))),'face':list(bpy.data.objects['face'].matrix_world.translation),'lights':[{ 'name':o.name,'energy':o.data.energy,'position':list(o.matrix_world.translation)} for o in s.objects if o.type=='LIGHT']},indent=2))
+bpy.ops.render.render(write_still=False)
+s.render.filepath=str(out/'preflight.png'); bpy.data.images['Render Result'].save_render(s.render.filepath,scene=s)
+im=bpy.data.images.load(str((out/'preflight.png').resolve()))
+pix=list(im.pixels); rgb=[v for i,v in enumerate(pix) if i%4!=3]
+mean=sum(rgb)/len(rgb); spread=max(rgb)-min(rgb)
+(out/'visual-check.json').write_text(json.dumps({'mean_linear':mean,'range_linear':spread}))
+assert mean>.01 and spread>.1, 'Black or blank preflight frame: abort before full render'
+s.render.filepath=str(out/'frame_')
 bpy.ops.render.render(animation=True)
-report={'prompt':prompt,'intent':intent,'recognized_keyword':matched,'fallback':'default wave' if not matched else None,'engine':'Blender Cycles CPU','frames':96,'fps':16,'width':640,'height':360,'elapsed_seconds':round(time.monotonic()-start,2),'max_rss_kib':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,'cpu_count':os.cpu_count(),'platform':platform.platform(),'blender':bpy.app.version_string,'limitations':['procedural prototype character','keyword routing only, not general prompt understanding','no speech or lip sync','not broadcast quality']}
+report={'prompt':prompt,'intent':intent,'recognized_keyword':matched,'fallback':'default wave' if not matched else None,'engine':'Blender Cycles CPU','frames':96,'fps':16,'width':320,'height':180,'elapsed_seconds':round(time.monotonic()-start,2),'max_rss_kib':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,'cpu_count':os.cpu_count(),'platform':platform.platform(),'blender':bpy.app.version_string,'limitations':['procedural prototype character','keyword routing only, not general prompt understanding','no speech or lip sync','not broadcast quality']}
 (out/'report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
