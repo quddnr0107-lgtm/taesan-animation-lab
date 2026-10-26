@@ -1,0 +1,161 @@
+{
+  "seed": 202610260004,
+  "unique_complete_configs": 200000,
+  "parameter_simulations": 200000,
+  "actual_frame_renders_during_search": 0,
+  "actual_video_renders_during_search": 0,
+  "total_accepted": 95044,
+  "rounds": [
+    {
+      "round": 1,
+      "trials": 10000,
+      "accepted": 35,
+      "rejected": 9965,
+      "rejection_counts": {
+        "animal_jitter": 5165,
+        "mouth_jitter": 6127,
+        "silence_residual": 5303,
+        "mouth_latency": 4254,
+        "blink_extreme": 5074,
+        "frozen_tail": 903,
+        "hand_jitter": 5773,
+        "warp_risk": 4377,
+        "frozen_hand": 187,
+        "head_jitter": 4379,
+        "frozen_nod": 1714,
+        "frozen_mouth": 22,
+        "audio_detached": 21
+      },
+      "seconds": 15.136927843093872
+    },
+    {
+      "round": 2,
+      "trials": 10000,
+      "accepted": 1867,
+      "rejected": 8133,
+      "rejection_counts": {
+        "head_jitter": 3508,
+        "hand_jitter": 2723,
+        "warp_risk": 1906,
+        "animal_jitter": 3645,
+        "frozen_tail": 327,
+        "mouth_latency": 1068,
+        "frozen_nod": 996,
+        "frozen_hand": 194,
+        "silence_residual": 104
+      },
+      "seconds": 15.387707948684692
+    },
+    {
+      "round": 3,
+      "trials": 60000,
+      "accepted": 48508,
+      "rejected": 11492,
+      "rejection_counts": {
+        "silence_residual": 272,
+        "mouth_latency": 10707,
+        "hand_jitter": 794,
+        "warp_risk": 172,
+        "frozen_nod": 65,
+        "frozen_tail": 1
+      },
+      "seconds": 91.06921315193176,
+      "hypothesis": "Target observed motion/animal jitter failures while preserving minimum expressiveness."
+    },
+    {
+      "round": 4,
+      "trials": 60000,
+      "accepted": 7177,
+      "rejected": 52823,
+      "rejection_counts": {
+        "mouth_jitter": 20770,
+        "hand_jitter": 10874,
+        "head_jitter": 9098,
+        "warp_risk": 8434,
+        "frozen_tail": 17852,
+        "mouth_latency": 19012,
+        "animal_jitter": 7398,
+        "blink_extreme": 20640,
+        "silence_residual": 12311,
+        "frozen_hand": 8050,
+        "frozen_nod": 20495
+      },
+      "seconds": 94.1818597316742,
+      "hypothesis": "Boundary challenge around third-round survivor support; half samples near parameter-range edges. Tests coupled-motion robustness rather than simply selecting low amplitudes."
+    },
+    {
+      "round": 5,
+      "trials": 60000,
+      "accepted": 37457,
+      "rejected": 22543,
+      "rejection_counts": {
+        "hand_jitter": 5319,
+        "warp_risk": 3276,
+        "animal_jitter": 1105,
+        "mouth_latency": 12478,
+        "frozen_hand": 1304,
+        "silence_residual": 3864,
+        "head_jitter": 2506,
+        "frozen_nod": 279,
+        "frozen_tail": 113
+      },
+      "seconds": 89.74780106544495,
+      "hypothesis": "Joint refinement using fourth-round stress survivors, preserving original engineering gates."
+    }
+  ],
+  "seconds": 30.552385568618774,
+  "gates": {
+    "max_mouth_step": 0.2,
+    "min_active_mouth_mean": 0.2,
+    "min_peak_open": 0.6,
+    "max_rest_open": 0.035,
+    "min_audio_envelope_correlation": 0.68,
+    "max_envelope_lag_frames": 2,
+    "max_hand_velocity_deg_per_frame": 1.8,
+    "max_hand_acceleration_deg_per_frame2": 0.48,
+    "min_hand_peak_degrees": 2.0,
+    "max_head_velocity_px_per_frame": 1.5,
+    "max_head_acceleration_px_per_frame2": 0.65,
+    "min_nod_peak_pixels": 2.0,
+    "min_sampled_linearized_jacobian": 0.5,
+    "max_blink_seconds": 0.38,
+    "min_blink_seconds": 0.16,
+    "min_tail_peak_deg": 0.45,
+    "max_tail_velocity_deg_per_frame": 0.55,
+    "max_bird_velocity_px_per_frame": 0.65
+  },
+  "finalists": [
+    {
+      "file": "finalist-1.json",
+      "trial_id": 8397,
+      "reason": "lowest latency with strongest zero-lag amplitude correspondence"
+    },
+    {
+      "file": "finalist-2.json",
+      "trial_id": 97204,
+      "reason": "lowest accepted mouth-control step"
+    },
+    {
+      "file": "finalist-3.json",
+      "trial_id": 19642,
+      "reason": "largest safe accepted hand expression"
+    },
+    {
+      "file": "finalist-4.json",
+      "trial_id": 98252,
+      "reason": "maximum sampled warp margin with non-frozen movement"
+    },
+    {
+      "file": "finalist-5.json",
+      "trial_id": 3969,
+      "reason": "balanced baseline-near motion and fast envelope correspondence"
+    }
+  ],
+  "limits": [
+    "Parameter/trajectory tests are not full image renders.",
+    "Jacobian is a linearized spatial/time sample, not a whole-frame proof.",
+    "Audio correlation is amplitude correspondence, not phoneme alignment or naturalness.",
+    "All gates fixed before both rounds."
+  ],
+  "extension_seconds": 275.3840243816376
+}

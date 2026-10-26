@@ -1,0 +1,52 @@
+name: Bounded 200k Numeric Motion Reproduction
+on:
+  pull_request:
+    types: [opened]
+    paths:
+      - 'experiments/motion/**'
+      - '.github/workflows/motion-numeric-200k.yml'
+permissions:
+  contents: read
+concurrency:
+  group: motion-numeric-200k
+  cancel-in-progress: false
+jobs:
+  reproduce:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      OMP_NUM_THREADS: '2'
+      OPENBLAS_NUM_THREADS: '2'
+      MKL_NUM_THREADS: '2'
+      PYTHONHASHSEED: '0'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r experiments/motion/requirements.txt
+      - name: Reproduce 200000 unique configurations and audit the same configurations
+        run: |
+          python experiments/motion/run.py --output output/numeric
+          python -m pip freeze > output/numeric/dependencies.txt
+          cat output/numeric/verification.json >> "$GITHUB_STEP_SUMMARY"
+          echo 'Numeric trajectories only: zero raster frames and zero videos rendered. V2 audits the same configurations, not another 200000 experiments.' >> "$GITHUB_STEP_SUMMARY"
+      - name: Compress raw audit ledgers without dropping records
+        if: always()
+        run: |
+          for f in output/numeric/trials.jsonl output/numeric/validation-v2.jsonl; do
+            if test -f "$f"; then gzip -6 "$f"; fi
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: numeric-motion-evidence-${{ github.run_id }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            output/numeric/*.json
+            output/numeric/*.jsonl.gz
+            output/numeric/dependencies.txt

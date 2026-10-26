@@ -1,0 +1,20 @@
+{
+  "max_mouth_step": 0.2,
+  "min_active_mouth_mean": 0.2,
+  "min_peak_open": 0.6,
+  "max_rest_open": 0.035,
+  "min_audio_envelope_correlation": 0.68,
+  "max_envelope_lag_frames": 2,
+  "max_hand_velocity_deg_per_frame": 1.8,
+  "max_hand_acceleration_deg_per_frame2": 0.48,
+  "min_hand_peak_degrees": 2.0,
+  "max_head_velocity_px_per_frame": 1.5,
+  "max_head_acceleration_px_per_frame2": 0.65,
+  "min_nod_peak_pixels": 2.0,
+  "min_sampled_linearized_jacobian": 0.5,
+  "max_blink_seconds": 0.38,
+  "min_blink_seconds": 0.16,
+  "min_tail_peak_deg": 0.45,
+  "max_tail_velocity_deg_per_frame": 0.55,
+  "max_bird_velocity_px_per_frame": 0.65
+}
