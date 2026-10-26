@@ -1,0 +1,11 @@
+{
+  "fixed_reference_best_corr_min": 0.65,
+  "fixed_reference_abs_lag_max_frames": 2,
+  "heldout_active_mouth_mean_min": 0.15,
+  "heldout_rest_mouth_max": 0.035,
+  "bird_actual_peak_px_min": 0.35,
+  "combined_head_velocity_px_per_frame_max": 1.8,
+  "combined_head_acceleration_px_per_frame2_max": 0.75,
+  "each_blink_peak_min": 0.95,
+  "blink_step_max": 0.9
+}

@@ -1,0 +1,44 @@
+{
+  "full_ledger_verification": {
+    "mode": "full-reproduction",
+    "unique_parameter_simulations": 200000,
+    "same_configs_revalidated_v2": 200000,
+    "new_configs_in_v2": 0,
+    "v1_accepted": 95044,
+    "v2_accepted": 80147,
+    "raster_frames_rendered": 0,
+    "videos_rendered": 0,
+    "trials_file_sha256": "409d7c5798c03f8f5d4210c93ab60444537fc5ecf243fe124ca73b15ae483ec1",
+    "v2_file_sha256": "b37924b1746ec45fe1c079df6b6de5a5f6266c432ed537cd2d9e796185a001e8"
+  },
+  "full_ledger_provenance": "existing local original search and v2 run; not a new rerun of the packaged full wrapper",
+  "packaged_wrapper_smoke": {
+    "mode": "smoke",
+    "unique_parameter_simulations": 32,
+    "same_configs_revalidated_v2": 32,
+    "new_configs_in_v2": 0,
+    "v1_accepted": 0,
+    "v2_accepted": 0,
+    "raster_frames_rendered": 0,
+    "videos_rendered": 0,
+    "trials_file_sha256": "e6628726eb406ddfd4dda877cb3e1e269930991454cd374899518a5dedfa3bcc",
+    "v2_file_sha256": "dbb7f7d30286c56e15ac0939deeb213d9cc41d131b24d67b83ac9ba69f992ba9"
+  },
+  "smoke_matches_original_first_32_records_exactly": true,
+  "checked_fields": [
+    "config",
+    "config_sha256",
+    "id",
+    "all numerical metrics",
+    "v1 acceptance/rejections",
+    "v2 linkage/acceptance/rejections"
+  ],
+  "portability_changes": [
+    "search.py: fixture path only",
+    "audit_v2.py: precomputed heldout RMS fixture replaces original WAV extraction; all later math preserved",
+    "extend_search.py: unchanged"
+  ],
+  "full_packaged_rerun_completed": false,
+  "python_compile": "passed",
+  "workflow_yaml_and_bounds": "passed"
+}

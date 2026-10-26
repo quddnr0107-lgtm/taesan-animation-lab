@@ -1,0 +1,65 @@
+{
+  "same_unique_configs_revalidated": 200000,
+  "new_unique_configs_added": 0,
+  "v2_survivors": 80147,
+  "survivors_by_round": {
+    "1": 30,
+    "2": 1515,
+    "3": 42770,
+    "4": 5551,
+    "5": 30281
+  },
+  "additional_rejection_counts": {
+    "fixed_reference_latency": 62467,
+    "heldout_silence_residual": 15874,
+    "frozen_bird": 24309,
+    "combined_head_jitter": 6421,
+    "blink_never_closes": 2216,
+    "blink_jitter": 7470,
+    "fixed_reference_correlation": 384
+  },
+  "seconds": 341.28801822662354,
+  "gates": {
+    "fixed_reference_best_corr_min": 0.65,
+    "fixed_reference_abs_lag_max_frames": 2,
+    "heldout_active_mouth_mean_min": 0.15,
+    "heldout_rest_mouth_max": 0.035,
+    "bird_actual_peak_px_min": 0.35,
+    "combined_head_velocity_px_per_frame_max": 1.8,
+    "combined_head_acceleration_px_per_frame2_max": 0.75,
+    "each_blink_peak_min": 0.95,
+    "blink_step_max": 0.9
+  },
+  "finalists": [
+    {
+      "file": "finalist-v2-1.json",
+      "trial_id": 8397,
+      "reason": "fixed-reference low latency + heldout envelope correspondence"
+    },
+    {
+      "file": "finalist-v2-2.json",
+      "trial_id": 120354,
+      "reason": "smoothest accepted mouth"
+    },
+    {
+      "file": "finalist-v2-3.json",
+      "trial_id": 19642,
+      "reason": "expressive accepted hand"
+    },
+    {
+      "file": "finalist-v2-4.json",
+      "trial_id": 98252,
+      "reason": "largest sampled warp margin"
+    },
+    {
+      "file": "finalist-v2-5.json",
+      "trial_id": 170592,
+      "reason": "balanced motion and fixed-reference response"
+    }
+  ],
+  "limits": [
+    "Heldout audio is one different eight-second passage from same voice, not broad generalization.",
+    "Final visual selection still required; numerical acceptance is not naturalness.",
+    "Full-raster exact warp Jacobian checked only during actual finalist renders."
+  ]
+}
